@@ -13,7 +13,7 @@ def get_connection():
     return connection
 
 
-def initialise_database():
+def initialize_database():
     connection = get_connection()
     cursor = connection.cursor()
 
