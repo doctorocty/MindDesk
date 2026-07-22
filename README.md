@@ -127,15 +127,3 @@ python app.py
 ```
 
 ---
-
-## 📅 Development Log
-
-### Version 0.1
-
-- Initial project structure
-- Flask setup
-- SQLite integration
-- Shared layout
-- Landing page
-- Static assets
-- Responsive base styling
