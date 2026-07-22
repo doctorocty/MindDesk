@@ -32,6 +32,7 @@ def initialize_database():
 
 
 def email_exists(email):
+
     connection = get_connection()
     cursor = connection.cursor()
 
@@ -45,3 +46,20 @@ def email_exists(email):
     connection.close()
 
     return user is not None
+
+
+def create_user(full_name, email, hashed_password):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO users (full_name, email, password)
+        VALUES (?, ?, ?)
+        """,
+        (full_name, email, hashed_password)
+    )
+
+    connection.commit()
+    connection.close()

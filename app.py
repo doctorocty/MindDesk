@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.security import generate_password_hash
 from config import Config
-from database import initialize_database, email_exists
+from database import initialize_database, email_exists, create_user
 
 
 
@@ -37,7 +37,14 @@ def signup():
                 error="An account with this email already exists."
             )
 
-        hashed_password = generate_password_hash(password)
+        hashed_password = generate_password_hash(password) 
+        create_user(
+        full_name,
+        email,
+        hashed_password
+    )
+
+        return redirect(url_for("login"))
 
         print("----- New Sign Up -----")
         print("Full Name:", full_name)
