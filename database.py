@@ -29,3 +29,19 @@ def initialize_database():
 
     connection.commit()
     connection.close()
+
+
+def email_exists(email):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        "SELECT id FROM users WHERE email = ?",
+        (email,)
+    )
+
+    user = cursor.fetchone()
+
+    connection.close()
+
+    return user is not None

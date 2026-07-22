@@ -16,7 +16,7 @@
 }
 
 body{
-    font-family:"cutesy"-serif;
+    font-family: "Quesy", cursive;
     background:var(--background);
     color:var(--text);
 }
@@ -76,4 +76,14 @@ body{
         font-size:42px;
     }
 
+}
+
+.password-wrapper{
+    position:relative;
+}
+
+.password-wrapper input{
+    width:100%;
+    padding-right:45px;
+    box-sizing:border-box;
 }
