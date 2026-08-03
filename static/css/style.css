@@ -16,9 +16,21 @@
 }
 
 body{
-    font-family: "Quesy", cursive;
-    background:var(--background);
+
+    margin:0;
+
+    background:var(--bg);
+
     color:var(--text);
+
+    font-family:"Poppins",sans-serif;
+
+    transition:
+
+        background .45s ease,
+
+        color .45s ease;
+
 }
 
 .hero{
@@ -87,3 +99,49 @@ body{
     padding-right:45px;
     box-sizing:border-box;
 }
+
+.flash-container{
+    width:100%;
+    max-width:500px;
+    margin:30px auto 0;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.flash-message{
+    padding:16px 20px;
+    border-radius:14px;
+    font-family:"Poppins", sans-serif;
+    font-size:0.95rem;
+    font-weight:500;
+    box-shadow:0 10px 20px rgba(0,0,0,.08);
+    animation:fadeDown .35s ease;
+}
+
+.flash-message.success{
+    background:#e8f8ee;
+    color:#18794e;
+    border-left:5px solid #22c55e;
+}
+
+.flash-message.error{
+    background:#fdecec;
+    color:#b42318;
+    border-left:5px solid #ef4444;
+}
+
+@keyframes fadeDown{
+
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+

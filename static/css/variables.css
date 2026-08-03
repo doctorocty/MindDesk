@@ -1,0 +1,47 @@
+/* LIGHT THEME */
+
+:root{
+
+    --bg:#F7F8FD;
+
+    --surface:#FFFFFF;
+
+    --surface-2:#FFF8FC;
+
+    --primary:#FF5FA2;
+
+    --primary-hover:#FF4B95;
+
+    --text:#252525;
+
+    --text-secondary:#666666;
+
+    --border:#F3D8E6;
+
+    --shadow:0 15px 45px rgba(255,95,162,.08);
+
+}
+
+/* DARK THEME */
+
+body.dark{
+
+    --bg:#17181D;
+
+    --surface:#23242B;
+
+    --surface-2:#2A2B33;
+
+    --primary:#FF78B7;
+
+    --primary-hover:#FF8BC2;
+
+    --text:#F6F6F7;
+
+    --text-secondary:#B7BBC6;
+
+    --border:#393A44;
+
+    --shadow:0 18px 50px rgba(0,0,0,.45);
+
+}

@@ -1,0 +1,188 @@
+/*LAMP*/
+
+.theme-lamp{
+
+    position:absolute;
+
+    top:38px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:210px;
+
+    z-index:30;
+
+    display:flex;
+
+    justify-content:center;
+
+    pointer-events:none;
+
+}
+
+.lamp-swing{
+
+    position:relative;
+
+    width:100%;
+
+    transform-origin:top center;
+
+}
+
+/* Hanging Cord */
+
+.theme-lamp::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-55px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:3px;
+
+    height:55px;
+
+    background:linear-gradient(
+        to bottom,
+        #D89A4D,
+        #C67A2C
+    );
+
+    border-radius:10px;
+
+    z-index:-1;
+
+}
+
+/* Lamp image */
+
+.lamp-image{
+
+    width:100%;
+
+    display:block;
+
+    user-select:none;
+
+    pointer-events:none;
+
+}
+
+/* Invisible clickable area */
+
+.lamp-button{
+
+    position:absolute;
+
+    left:50%;
+
+    top:85px;
+
+    transform:translateX(-50%);
+
+    width:70px;
+
+    height:70px;
+
+    border:none;
+
+    background:transparent;
+
+    cursor:pointer;
+
+    border-radius:50%;
+
+    pointer-events:auto;
+
+}
+
+/* Glow */
+
+.lamp-glow{
+
+    position:absolute;
+
+    left:50%;
+
+    top:200px;
+
+    transform:translateX(-50%);
+
+    width:250px;
+
+    height:180px;
+
+    background:
+        radial-gradient(
+
+            ellipse at top,
+
+            rgb(214, 185, 89) 0%,
+
+            rgba(255, 235, 190, 0.425) 35%,
+
+            rgba(255, 201, 120, 0.377) 55%,
+
+            transparent 78%
+
+        );
+
+    filter:blur(20px);
+
+    opacity:.9;
+
+    transition:
+
+        opacity .45s ease,
+
+        filter .45s ease;
+
+    pointer-events:none;
+
+}
+
+body.dark .lamp-glow{
+
+    opacity:0;
+
+    filter:blur(28px);
+
+}
+
+.lamp-image{
+
+    width:100%;
+
+    display:block;
+
+    user-select:none;
+
+    pointer-events:none;
+
+    transition:
+
+        filter .45s ease,
+
+        transform .3s ease;
+
+}
+
+body.dark .lamp-image{
+
+    filter:brightness(.78);
+
+}
+
+.swing{
+
+    animation:lampSwing .95s ease;
+
+}

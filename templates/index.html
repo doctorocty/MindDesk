@@ -1,21 +1,124 @@
 {% extends "layout.html" %}
 
-{% block content%}
+{% block title %}MindDesk{% endblock %}
+
+{% block content %}
+
+<header class="landing-header">
+
+    <nav class="navbar">
+
+       <a href="{{ url_for('home') }}" class="logo">
+
+    <span class="logo-icon">
+        <i class="fa-solid fa-book-open"></i>
+    </span>
+
+    <span class="logo-text">
+        MindDesk
+    </span>
+
+</a>
+
+<div class="nav-links"></div>
+
+    <a href="#about" class="nav-link">
+        About
+    </a>
+
+    <a href="{{ url_for('login') }}" class="login-btn">
+        Log In
+    </a>
+
+    <a href="{{ url_for('signup') }}" class="signup-btn">
+        Sign Up
+    </a>
+
+</div>
+    </nav>
+
+    <div class="theme-lamp">
+
+    <div class="lamp-swing">
+
+        <img
+            src="{{ url_for('static', filename='media/lamp/lamp.png') }}"
+            alt="Theme Lamp"
+            class="lamp-image">
+
+        <button
+            id="themeToggle"
+            class="lamp-button"
+            aria-label="Toggle Theme">
+        </button>
+
+    </div>
+
+    <div class="lamp-glow"></div>
+
+</div>
+
+</div>
+
+</header>
 
 <section class="hero">
 
-    <div class="hero-content">
+    <div class="hero-left">
 
-        <h1>MindDesk</h1>
+        <h1>
+            PLAN SMARTER.<br>
+            FOCUS BETTER.
+        </h1>
 
         <p>
-            Your modern digital study hub for organizing tasks,
-            notes, goals, habits, and everything you need to stay productive.
+            MindDesk brings your notes, tasks, goals, and study plans together
+            in one beautiful workspace designed to help students stay organized.
         </p>
 
-        <a href="#" class="button">
-            Get Started
-        </a>
+        <div class="hero-buttons">
+
+            <a href="{{ url_for('signup') }}" class="hero-primary-btn">
+                Get Started
+            </a>
+
+            <a href="#about" class="hero-secondary-btn">
+                Explore Features
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="hero-right">
+
+        <div class="dashboard-preview">
+
+            <div class="preview-top">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+            <div class="preview-content">
+
+                <h3>Today's Tasks</h3>
+
+                <ul>
+
+                    <li>✓ Physics Homework</li>
+
+                    <li>✓ Biology Revision</li>
+
+                    <li>✓ Math Practice</li>
+
+                </ul>
+
+            </div>
+
+        </div>
 
     </div>
 

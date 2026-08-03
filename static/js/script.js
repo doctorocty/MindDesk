@@ -97,3 +97,88 @@ if (input.type === "password") {
     });
 
 });
+
+/*  LAMP PHYSICS */
+
+const lamp = document.querySelector(".lamp-swing");
+
+let angle = 0;
+let velocity = 0;
+
+const gravity = 0.22;
+const damping = 0.985;
+
+let animationRunning = false;
+
+function animateLamp() {
+
+    velocity += (-angle) * gravity;
+
+    velocity *= damping;
+
+    angle += velocity;
+
+    lamp.style.transform = `rotate(${angle}deg)`;
+
+    if (Math.abs(angle) < 0.05 && Math.abs(velocity) < 0.05) {
+
+        angle = 0;
+        velocity = 0;
+
+        lamp.style.transform = "rotate(0deg)";
+
+        animationRunning = false;
+
+        return;
+    }
+
+    requestAnimationFrame(animateLamp);
+
+}
+
+/* THEME TOGGLE */
+
+const themeButton = document.getElementById("themeToggle");
+
+if (themeButton) {
+
+    const savedTheme = localStorage.getItem("minddesk-theme");
+
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+    }
+
+velocity -= 3.5;
+
+if (!animationRunning) {
+
+    animationRunning = true;
+
+    requestAnimationFrame(animateLamp);
+
+}
+
+    themeButton.addEventListener("click", () => { 
+        velocity += 1;
+
+requestAnimationFrame(animateLamp);
+        const lamp = document.querySelector(".lamp-swing");
+
+lamp.classList.remove("swing");
+
+void lamp.offsetWidth;
+
+lamp.classList.add("swing");
+
+        document.body.classList.toggle("dark");
+
+        localStorage.setItem(
+            "minddesk-theme",
+            document.body.classList.contains("dark")
+                ? "dark"
+                : "light"
+        );
+
+    });
+
+}

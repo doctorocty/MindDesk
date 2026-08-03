@@ -63,3 +63,24 @@ def create_user(full_name, email, hashed_password):
 
     connection.commit()
     connection.close()
+
+
+def get_user_by_email(email):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM users
+        WHERE email = ?
+        """,
+        (email,)
+    )
+
+    user = cursor.fetchone()
+
+    connection.close()
+
+    return user
