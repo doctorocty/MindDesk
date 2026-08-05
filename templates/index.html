@@ -10,17 +10,16 @@
 
        <a href="{{ url_for('home') }}" class="logo">
 
-    <span class="logo-icon">
-        <i class="fa-solid fa-book-open"></i>
-    </span>
+    <img
+        src="{{ url_for('static', filename='media/download-Photoroom.png') }}"
+        alt="MindDesk Logo"
+        class="logo-image">
 
-    <span class="logo-text">
-        MindDesk
-    </span>
+            <span class="logo-text">MindDesk</span>
 
 </a>
 
-<div class="nav-links"></div>
+<div class="nav-links">
 
     <a href="#about" class="nav-link">
         About
@@ -35,28 +34,35 @@
     </a>
 
 </div>
+
     </nav>
 
     <div class="theme-lamp">
 
-    <div class="lamp-swing">
+    <div class="lamp-swing" id="themeToggle">
 
         <img
             src="{{ url_for('static', filename='media/lamp/lamp.png') }}"
             alt="Theme Lamp"
             class="lamp-image">
 
-        <button
-            id="themeToggle"
-            class="lamp-button"
-            aria-label="Toggle Theme">
-        </button>
+        <div class="lamp-glow"></div>
 
     </div>
 
-    <div class="lamp-glow"></div>
-
 </div>
+
+<div class="hello-kitty">
+
+    <div class="kitty-message">
+
+        <h3>Good Luck!</h3>
+
+    </div>
+
+    <img
+        src="{{ url_for('static', filename='media/hello-kitty.gif') }}"
+        alt="Hello Kitty">
 
 </div>
 

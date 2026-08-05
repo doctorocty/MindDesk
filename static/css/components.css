@@ -30,6 +30,10 @@
 
     transform-origin:top center;
 
+    cursor:pointer;
+
+    pointer-events:auto;
+
 }
 
 /* Hanging Cord */
@@ -76,33 +80,7 @@
 
 }
 
-/* Invisible clickable area */
 
-.lamp-button{
-
-    position:absolute;
-
-    left:50%;
-
-    top:85px;
-
-    transform:translateX(-50%);
-
-    width:70px;
-
-    height:70px;
-
-    border:none;
-
-    background:transparent;
-
-    cursor:pointer;
-
-    border-radius:50%;
-
-    pointer-events:auto;
-
-}
 
 /* Glow */
 

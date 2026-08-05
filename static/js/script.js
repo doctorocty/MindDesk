@@ -98,77 +98,60 @@ if (input.type === "password") {
 
 });
 
-/*  LAMP PHYSICS */
+/* LAMP */
 
-const lamp = document.querySelector(".lamp-swing");
+const lamp = document.getElementById("themeToggle");
 
-let angle = 0;
-let velocity = 0;
+if (lamp) {
 
-const gravity = 0.22;
-const damping = 0.985;
+    let angle = 0;
+    let velocity = 0;
+    let animationRunning = false;
 
-let animationRunning = false;
+    const gravity = 0.22;
+    const damping = 0.985;
 
-function animateLamp() {
+    const glow = document.querySelector(".lamp-glow");
 
-    velocity += (-angle) * gravity;
-
-    velocity *= damping;
-
-    angle += velocity;
-
-    lamp.style.transform = `rotate(${angle}deg)`;
-
-    if (Math.abs(angle) < 0.05 && Math.abs(velocity) < 0.05) {
-
-        angle = 0;
-        velocity = 0;
-
-        lamp.style.transform = "rotate(0deg)";
-
-        animationRunning = false;
-
-        return;
-    }
-
-    requestAnimationFrame(animateLamp);
-
-}
-
-/* THEME TOGGLE */
-
-const themeButton = document.getElementById("themeToggle");
-
-if (themeButton) {
-
-    const savedTheme = localStorage.getItem("minddesk-theme");
-
-    if (savedTheme === "dark") {
+    // Restore saved theme
+    if (localStorage.getItem("minddesk-theme") === "dark") {
         document.body.classList.add("dark");
     }
 
-velocity -= 3.5;
+    function updateGlow() {
+        if (!glow) return;
 
-if (!animationRunning) {
+        glow.style.opacity =
+            document.body.classList.contains("dark")
+                ? "1"
+                : "0";
+    }
 
-    animationRunning = true;
+    updateGlow();
 
-    requestAnimationFrame(animateLamp);
+    function animateLamp() {
 
-}
+        velocity += (-angle) * gravity;
+        velocity *= damping;
+        angle += velocity;
 
-    themeButton.addEventListener("click", () => { 
-        velocity += 1;
+        lamp.style.transform = `rotate(${angle}deg)`;
 
-requestAnimationFrame(animateLamp);
-        const lamp = document.querySelector(".lamp-swing");
+        if (Math.abs(angle) < 0.05 && Math.abs(velocity) < 0.05) {
 
-lamp.classList.remove("swing");
+            lamp.style.transform = "rotate(0deg)";
+            angle = 0;
+            velocity = 0;
+            animationRunning = false;
+            return;
 
-void lamp.offsetWidth;
+        }
 
-lamp.classList.add("swing");
+        requestAnimationFrame(animateLamp);
+
+    }
+
+    lamp.addEventListener("click", () => {
 
         document.body.classList.toggle("dark");
 
@@ -178,6 +161,15 @@ lamp.classList.add("swing");
                 ? "dark"
                 : "light"
         );
+
+        updateGlow();
+
+        velocity += 4;
+
+        if (!animationRunning) {
+            animationRunning = true;
+            requestAnimationFrame(animateLamp);
+        }
 
     });
 
