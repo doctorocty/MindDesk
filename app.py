@@ -19,6 +19,8 @@ from database import (
 app = Flask(__name__)
 print("its running yayyy")
 app.config.from_object(Config)
+print("SECRET_KEY =", app.config.get("SECRET_KEY"))
+print("DATABASE_URL =", app.config.get("DATABASE_URL"))
 
 initialize_database()
 
