@@ -78,9 +78,6 @@ def signup():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
-    if "user_id" in session:
-        return redirect(url_for("dashboard"))
-
     if request.method == "POST":
 
         email = request.form.get("email")
@@ -135,11 +132,7 @@ def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    return f"""
-    <h1>Welcome, {session['user_name']}!</h1>
-    <p>You have successfully logged in to MindDesk.</p>
-    <a href="/logout">Logout</a>
-    """
+    return "NEW DASHBOARD ROUTE IS WORKING"
 
 
 @app.route("/logout")
