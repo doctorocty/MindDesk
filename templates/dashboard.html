@@ -12,9 +12,14 @@
             <span>MindDesk</span>
         </a>
 
+        <div class="sidebar-section-label">
+            WORKSPACE
+        </div>
+
         <nav class="dashboard-nav">
 
-            <a href="#" class="dashboard-nav-link active">
+            <a href="{{ url_for('dashboard') }}"
+               class="dashboard-nav-link active">
                 <i class="fa-solid fa-house"></i>
                 <span>Dashboard</span>
             </a>
@@ -36,52 +41,394 @@
 
         </nav>
 
+        <div class="sidebar-section-label sidebar-tools-label">
+            PERSONAL
+        </div>
+
+        <nav class="dashboard-nav">
+
+            <a href="#" class="dashboard-nav-link">
+                <i class="fa-regular fa-user"></i>
+                <span>Profile</span>
+            </a>
+
+            <a href="#" class="dashboard-nav-link">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
         <div class="dashboard-sidebar-bottom">
 
-            <a href="{{ url_for('logout') }}" class="dashboard-nav-link logout-link">
+            <a href="{{ url_for('logout') }}"
+               class="dashboard-nav-link logout-link">
+
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
                 <span>Log Out</span>
+
             </a>
 
         </div>
 
     </aside>
 
-
     <main class="dashboard-main">
 
         <header class="dashboard-header">
 
             <div>
-                <p class="dashboard-eyebrow">YOUR WORKSPACE</p>
+
+                <p class="dashboard-eyebrow">
+                    YOUR WORKSPACE
+                </p>
 
                 <h1>
-                    Good morning, {{ user_name }}! 🌸
+                    {{ greeting }}, {{ user_name }}! 
                 </h1>
 
                 <p class="dashboard-subtitle">
                     Let's make today a productive one.
                 </p>
+
+            </div>
+
+            <div class="dashboard-date">
+
+                <i class="fa-regular fa-calendar"></i>
+
+                <span id="current-date"></span>
+
             </div>
 
         </header>
 
+        <div class="dashboard-lamp">
 
-        <section class="dashboard-content">
+            <div class="dashboard-lamp-swing">
 
-            <div class="dashboard-welcome-card">
+                <img
+                    src="{{ url_for('static', filename='media/lamp/lamp.png') }}"
+                    alt="MindDesk lamp">
+
+            </div>
+
+            <div class="dashboard-lamp-glow"></div>
+
+        </div>
+
+        <section class="dashboard-stats">
+
+            <div class="stat-card">
+
+                <div class="stat-icon pink">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
 
                 <div>
-                    <p class="card-label">TODAY</p>
 
-                    <h2>
-                        Ready to get things done?
-                    </h2>
+                    <p class="stat-label">
+                        TOTAL TASKS
+                    </p>
+
+                    <h3>0</h3>
+
+                    <span class="stat-description">
+                        Tasks for today
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon green">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+
+                <div>
+
+                    <p class="stat-label">
+                        COMPLETED
+                    </p>
+
+                    <h3>0</h3>
+
+                    <span class="stat-description">
+                        Tasks completed
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon purple">
+                    <i class="fa-solid fa-bullseye"></i>
+                </div>
+
+                <div>
+
+                    <p class="stat-label">
+                        ACTIVE GOALS
+                    </p>
+
+                    <h3>0</h3>
+
+                    <span class="stat-description">
+                        Goals in progress
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon blue">
+                    <i class="fa-regular fa-clock"></i>
+                </div>
+
+                <div>
+
+                    <p class="stat-label">
+                        FOCUS TIME
+                    </p>
+
+                    <h3>0h</h3>
+
+                    <span class="stat-description">
+                        Study time today
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="dashboard-grid">
+
+            <div class="dashboard-card tasks-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <p class="card-label">
+                            TODAY
+                        </p>
+
+                        <h2>
+                            Today's Tasks
+                        </h2>
+
+                    </div>
+
+                    <a href="#" class="card-action">
+                        View all
+                    </a>
+
+                </div>
+
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        <i class="fa-regular fa-circle-check"></i>
+                    </div>
+
+                    <h3>
+                        Nothing here yet
+                    </h3>
 
                     <p>
-                        Your tasks, notes, goals, and study plans will all live here.
+                        Add your first task and start getting things done.
                     </p>
+
+                    <button class="cute-button">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Task
+                    </button>
+
                 </div>
+
+            </div>
+
+            <div class="dashboard-card goals-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <p class="card-label">
+                            PROGRESS
+                        </p>
+
+                        <h2>
+                            Your Goals
+                        </h2>
+
+                    </div>
+
+                    <a href="#" class="card-action">
+                        View all
+                    </a>
+
+                </div>
+
+
+                <div class="empty-state compact">
+
+                    <div class="empty-icon purple-icon">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+
+                    <h3>
+                        Set your first goal
+                    </h3>
+
+                    <p>
+                        Turn your plans into something you can track.
+                    </p>
+
+                    <button class="cute-button purple-button">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Goal
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="dashboard-card notes-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <p class="card-label">
+                            NOTES
+                        </p>
+
+                        <h2>
+                            Recent Notes
+                        </h2>
+
+                    </div>
+
+                    <a href="#" class="card-action">
+                        View all
+                    </a>
+
+                </div>
+
+
+                <div class="empty-state compact">
+
+                    <div class="empty-icon yellow-icon">
+                        <i class="fa-regular fa-note-sticky"></i>
+                    </div>
+
+                    <h3>
+                        Your ideas live here
+                    </h3>
+
+                    <p>
+                        Keep your thoughts, study notes, and ideas organized.
+                    </p>
+
+                    <button class="cute-button yellow-button">
+                        <i class="fa-solid fa-plus"></i>
+                        New Note
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="dashboard-card focus-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <p class="card-label">
+                            FOCUS
+                        </p>
+
+                        <h2>
+                            Study Session
+                        </h2>
+
+                    </div>
+
+                    <div class="focus-small-icon">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+
+                </div>
+
+
+                <div class="focus-content">
+
+                    <div class="focus-circle">
+
+                        <div>
+
+                            <strong>
+                                25
+                            </strong>
+
+                            <span>
+                                min
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <p>
+                        Ready for a focused study session?
+                    </p>
+
+                    <button class="focus-button">
+                        <i class="fa-solid fa-play"></i>
+                        Start Focus
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="motivation-card">
+
+            <div class="motivation-flower">
+                
+            </div>
+
+            <div>
+
+                <p class="card-label">
+                    A LITTLE REMINDER
+                </p>
+
+                <h2>
+                    Small steps still move you forward.
+                </h2>
+
+                <p>
+                    You don't have to do everything today.
+                    Just start with one thing.
+                </p>
 
             </div>
 
@@ -90,5 +437,26 @@
     </main>
 
 </div>
+
+<script>
+
+    const dateElement = document.getElementById("current-date");
+
+    if (dateElement) {
+
+        const today = new Date();
+
+        dateElement.textContent = today.toLocaleDateString(
+            undefined,
+            {
+                weekday: "long",
+                month: "long",
+                day: "numeric"
+            }
+        );
+
+    }
+
+</script>
 
 {% endblock %}

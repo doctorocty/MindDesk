@@ -16,6 +16,8 @@ from database import (
     get_user_by_email
 )
 
+from datetime import datetime
+
 app = Flask(__name__)
 app.config.from_object(Config)
 
@@ -129,10 +131,23 @@ def forgot_password():
 @app.route("/dashboard")
 def dashboard():
 
-    if "user_id" not in session:
-        return redirect(url_for("login"))
+    current_hour = datetime.now().hour
 
-    return "NEW DASHBOARD ROUTE IS WORKING"
+    if current_hour < 12:
+        greeting = "Good morning"
+    elif current_hour < 18:
+        greeting = "Good afternoon"
+    else:
+        greeting = "Good evening"
+
+    user_name = session.get("user_name", "there")
+
+    return render_template(
+        "dashboard.html",
+        user_name=user_name,
+        greeting=greeting,
+        logged_in="user_id" in session
+    )
 
 
 @app.route("/logout")
@@ -148,6 +163,6 @@ import os
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000)),
-        debug=False
+        port=5000,
+        debug=True
     )
