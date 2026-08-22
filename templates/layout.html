@@ -48,27 +48,31 @@ href="{{ url_for('static', filename='css/components.css') }}">
     rel="stylesheet"
     href="{{ url_for('static', filename='css/dashboard.css') }}">
 
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/tasks.css') }}">
+
 </head>
 
 <body>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
+    {% if messages %}
 
-            <div class="flash-container">
+        <div class="flash-container">
 
-                {% for category, message in messages %}
+            {% for category, message in messages %}
 
-                    <div class="flash-message {{ category }}">
-                        {{ message }}
-                    </div>
+                <div class="flash-message {{ category }}">
+                    <span>{{ message }}</span>
+                </div>
 
-                {% endfor %}
+            {% endfor %}
 
-            </div>
+        </div>
 
-        {% endif %}
-    {% endwith %}
+    {% endif %}
+{% endwith %}
 
     {% block content %}
     {% endblock %}

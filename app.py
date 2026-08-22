@@ -7,22 +7,34 @@ from flask import (
     session,
     flash
 )
-from werkzeug.security import generate_password_hash, check_password_hash
+
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
+
 from config import Config
+
 from database import (
     initialize_database,
     email_exists,
     create_user,
-    get_user_by_email
+    get_user_by_email,
+    create_task,
+    get_tasks,
+    get_today_tasks,
+    toggle_task,
+    delete_task,
+    get_task_counts
 )
 
 from datetime import datetime
 
 app = Flask(__name__)
+
 app.config.from_object(Config)
 
 initialize_database()
-
 
 @app.route("/")
 def home():
@@ -32,7 +44,6 @@ def home():
 
     return render_template("index.html")
 
-
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
 
@@ -41,30 +52,55 @@ def signup():
 
     if request.method == "POST":
 
-        full_name = request.form.get("full_name")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        confirm_password = request.form.get("confirm_password")
+        full_name = request.form.get(
+            "full_name",
+            ""
+        ).strip()
 
-        if not full_name or not email or not password or not confirm_password:
+        email = request.form.get(
+            "email",
+            ""
+        ).strip().lower()
+
+        password = request.form.get(
+            "password",
+            ""
+        )
+
+        confirm_password = request.form.get(
+            "confirm_password",
+            ""
+        )
+
+        if (
+            not full_name
+            or not email
+            or not password
+            or not confirm_password
+        ):
+
             return render_template(
                 "auth/signup.html",
                 error="Please fill in all fields."
             )
 
         if password != confirm_password:
+
             return render_template(
                 "auth/signup.html",
                 error="Passwords do not match."
             )
 
         if email_exists(email):
+
             return render_template(
                 "auth/signup.html",
                 error="An account with this email already exists."
             )
 
-        hashed_password = generate_password_hash(password)
+        hashed_password = generate_password_hash(
+            password
+        )
 
         create_user(
             full_name,
@@ -72,20 +108,39 @@ def signup():
             hashed_password
         )
 
-        return redirect(url_for("login"))
+        flash(
+            "Account created successfully. Please log in.",
+            "success"
+        )
 
-    return render_template("auth/signup.html")
+        return redirect(
+            url_for("login")
+        )
 
+    return render_template(
+        "auth/signup.html"
+    )
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
+    if "user_id" in session:
+        return redirect(url_for("dashboard"))
+
     if request.method == "POST":
 
-        email = request.form.get("email")
-        password = request.form.get("password")
+        email = request.form.get(
+            "email",
+            ""
+        ).strip().lower()
+
+        password = request.form.get(
+            "password",
+            ""
+        )
 
         if not email or not password:
+
             return render_template(
                 "auth/login.html",
                 error="Please fill in all fields."
@@ -94,39 +149,73 @@ def login():
         user = get_user_by_email(email)
 
         if user is None:
-            flash("No account exists with that email.", "error")
-            return redirect(url_for("login"))
 
-        if not check_password_hash(user["password"], password):
-           flash("Incorrect password.", "error")
-           return redirect(url_for("login"))
+            flash(
+                "No account exists with that email.",
+                "error"
+            )
 
+            return redirect(
+                url_for("login")
+            )
+
+        if not check_password_hash(
+            user["password"],
+            password
+        ):
+
+            flash(
+                "Incorrect password.",
+                "error"
+            )
+
+            return redirect(
+                url_for("login")
+            )
+
+        # Store login information
         session["user_id"] = user["id"]
+
         session["user_name"] = user["full_name"]
 
-        flash(f"Welcome back, {user['full_name']}!", "success")
+        flash(
+            f"Welcome back, {user['full_name']}!",
+            "success"
+        )
 
-        return redirect(url_for("dashboard"))
+        return redirect(
+            url_for("dashboard")
+        )
 
-        return redirect(url_for("dashboard"))
+    return render_template(
+        "auth/login.html"
+    )
 
-    return render_template("auth/login.html")
-@app.route("/forgot-password", methods=["GET", "POST"])
+@app.route(
+    "/forgot-password",
+    methods=["GET", "POST"]
+)
 def forgot_password():
 
     if request.method == "POST":
 
-        email = request.form.get("email")
+        email = request.form.get(
+            "email",
+            ""
+        ).strip()
 
         flash(
             f"A verification code would be sent to {email}.",
             "success"
         )
 
-        return redirect(url_for("forgot_password"))
+        return redirect(
+            url_for("forgot_password")
+        )
 
-    return render_template("auth/forgot_password.html")
-
+    return render_template(
+        "auth/forgot_password.html"
+    )
 
 @app.route("/dashboard")
 def dashboard():
@@ -134,35 +223,309 @@ def dashboard():
     current_hour = datetime.now().hour
 
     if current_hour < 12:
+
         greeting = "Good morning"
+
     elif current_hour < 18:
+
         greeting = "Good afternoon"
+
     else:
+
         greeting = "Good evening"
 
-    user_name = session.get("user_name", "there")
 
-    return render_template(
-        "dashboard.html",
-        user_name=user_name,
-        greeting=greeting,
-        logged_in="user_id" in session
+    user_id = session.get(
+        "user_id"
     )
 
+    user_name = session.get(
+        "user_name",
+        "there"
+    )
+
+    if not user_id:
+
+        counts = {
+            "total_tasks": 0,
+            "completed_tasks": 0
+        }
+
+        today_tasks = []
+
+    else:
+
+        counts = get_task_counts(
+            user_id
+        )
+
+        all_tasks = get_tasks(
+            user_id
+        )
+
+
+        today = datetime.now().date()
+
+        today_tasks = []
+
+
+        for task in all_tasks:
+            if task["completed"]:
+
+                continue
+
+
+            due_date = task.get(
+                "due_date"
+            )
+
+            if due_date is None:
+
+                today_tasks.append(
+                    task
+                )
+
+            else:
+
+                task_date = due_date
+
+                if str(task_date) == str(today):
+
+                    today_tasks.append(
+                        task
+                    )
+
+
+    return render_template(
+
+        "dashboard.html",
+
+        greeting=greeting,
+
+        user_name=user_name,
+
+        logged_in=(
+            "user_id" in session
+        ),
+
+        total_tasks=counts[
+            "total_tasks"
+        ],
+
+        completed_tasks=counts[
+            "completed_tasks"
+        ],
+
+        today_tasks=today_tasks
+
+    )
+
+@app.route("/tasks")
+def tasks():
+
+    if "user_id" not in session:
+
+        return redirect(
+            url_for("login")
+        )
+
+
+    user_id = session[
+        "user_id"
+    ]
+
+
+    user_tasks = get_tasks(
+        user_id
+    )
+
+
+    return render_template(
+
+        "tasks.html",
+
+        tasks=user_tasks
+
+    )
+
+@app.route(
+    "/tasks/create",
+    methods=["POST"]
+)
+def create_task_route():
+
+    if "user_id" not in session:
+
+        return redirect(
+            url_for("login")
+        )
+
+
+    title = request.form.get(
+        "title",
+        ""
+    ).strip()
+
+
+    description = request.form.get(
+        "description",
+        ""
+    ).strip()
+
+
+    due_date = request.form.get(
+        "due_date"
+    ) or None
+
+
+    priority = request.form.get(
+        "priority",
+        "medium"
+    )
+
+
+    if not title:
+
+        flash(
+            "Please enter a task title.",
+            "error"
+        )
+
+        if request.referrer and "/dashboard" in request.referrer:
+
+            return redirect(
+                url_for("dashboard")
+            )
+
+
+        return redirect(
+            url_for("tasks")
+        )
+
+
+    create_task(
+
+        session["user_id"],
+
+        title,
+
+        description,
+
+        due_date,
+
+        priority
+
+    )
+
+
+    flash(
+        "Task added successfully.",
+        "success"
+    )
+
+    if request.referrer and "/dashboard" in request.referrer:
+
+        return redirect(
+            url_for("dashboard")
+        )
+
+
+    return redirect(
+        url_for("tasks")
+    )
+
+@app.route(
+    "/tasks/<int:task_id>/toggle",
+    methods=["POST"]
+)
+def toggle_task_route(task_id):
+
+    if "user_id" not in session:
+
+        return redirect(
+            url_for("login")
+        )
+
+    toggle_task(
+
+        task_id,
+
+        session["user_id"]
+
+    )
+
+    if request.referrer and "/dashboard" in request.referrer:
+
+        return redirect(
+            url_for("dashboard")
+        )
+
+
+    return redirect(
+        url_for("tasks")
+    )
+
+@app.route(
+    "/tasks/<int:task_id>/delete",
+    methods=["POST"]
+)
+def delete_task_route(task_id):
+
+    if "user_id" not in session:
+
+        return redirect(
+            url_for("login")
+        )
+
+
+    delete_task(
+
+        task_id,
+
+        session["user_id"]
+
+    )
+
+
+    flash(
+        "Task deleted.",
+        "success"
+    )
+
+
+    if request.referrer and "/dashboard" in request.referrer:
+
+        return redirect(
+            url_for("dashboard")
+        )
+
+
+    return redirect(
+        url_for("tasks")
+    )
 
 @app.route("/logout")
 def logout():
 
     session.clear()
 
-    return redirect(url_for("login"))
+    flash(
+        "You have been logged out.",
+        "success"
+    )
 
-
-import os
+    return redirect(
+        url_for("login")
+    )
 
 if __name__ == "__main__":
+
     app.run(
+
         host="0.0.0.0",
+
         port=5000,
+
         debug=True
+
     )

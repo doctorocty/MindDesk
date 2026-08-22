@@ -1,0 +1,325 @@
+{% extends "layout.html" %}
+
+{% block title %}Tasks — MindDesk{% endblock %}
+
+{% block content %}
+
+<div class="tasks-page">
+
+    <main class="tasks-main">
+        
+        <header class="tasks-header">
+
+            <div>
+
+                <p class="tasks-eyebrow">
+                    YOUR WORKSPACE
+                </p>
+
+                <h1>
+                    Tasks
+                </h1>
+
+                <p class="tasks-subtitle">
+                    Keep track of everything you want to get done.
+                </p>
+
+            </div>
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="tasks-back-button">
+
+                <i class="fa-solid fa-arrow-left"></i>
+                Dashboard
+
+            </a>
+
+        </header>
+
+        <section class="task-create-card">
+
+            <div class="task-create-header">
+
+                <div>
+
+                    <p class="task-section-label">
+                        NEW TASK
+                    </p>
+
+                    <h2>
+                        What needs to be done?
+                    </h2>
+
+                </div>
+
+                <img
+                    src="{{ url_for('static', filename='media/task-icon.png') }}"
+                    alt="Task"
+                    class="task-header-icon">
+
+            </div>
+
+
+            <form
+                action="{{ url_for('create_task_route') }}"
+                method="POST"
+                class="task-form">
+
+
+                <div class="task-form-title">
+
+                    <label for="title">
+                        Task title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        placeholder="e.g. Finish Physics homework"
+                        maxlength="150"
+                        required>
+
+                </div>
+
+
+                <div class="task-form-description">
+
+                    <label for="description">
+                        Description
+                        <span>Optional</span>
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        placeholder="Add a little more detail..."
+                        rows="3"></textarea>
+
+                </div>
+
+
+                <div class="task-form-row">
+
+
+                    <div class="task-form-field">
+
+                        <label for="due_date">
+                            Due date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="due_date"
+                            name="due_date">
+
+                    </div>
+
+
+                    <div class="task-form-field">
+
+                        <label for="priority">
+                            Priority
+                        </label>
+
+                        <select
+                            id="priority"
+                            name="priority">
+
+                            <option value="low">
+                                Low
+                            </option>
+
+                            <option
+                                value="medium"
+                                selected>
+
+                                Medium
+
+                            </option>
+
+                            <option value="high">
+                                High
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="create-task-button">
+
+                        <i class="fa-solid fa-plus"></i>
+
+                        Add Task
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <section class="task-list-section">
+
+            <div class="task-list-header">
+
+                <div>
+
+                    <p class="task-section-label">
+                        YOUR TASKS
+                    </p>
+
+                    <h2>
+                        Everything on your plate
+                    </h2>
+
+                </div>
+
+                <div class="task-count">
+
+                    {{ tasks|length }}
+
+                    <span>
+                        task{% if tasks|length != 1 %}s{% endif %}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            {% if tasks %}
+
+                <div class="task-list">
+
+                    {% for task in tasks %}
+
+                        <article
+                            class="task-item {% if task.completed %}task-completed{% endif %}">
+
+
+                            <div class="task-check">
+
+                                <form
+                                    action="{{ url_for('toggle_task_route', task_id=task.id) }}"
+                                    method="POST">
+
+                                    <button
+                                        type="submit"
+                                        class="task-check-button"
+                                        aria-label="Toggle task">
+
+                                        {% if task.completed %}
+
+                                            <i class="fa-solid fa-check"></i>
+
+                                        {% endif %}
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+
+                            <div class="task-item-content">
+
+                                <div class="task-item-top">
+
+                                    <h3>
+                                        {{ task.title }}
+                                    </h3>
+
+
+                                    <span
+                                        class="priority-badge priority-{{ task.priority }}">
+
+                                        {{ task.priority|capitalize }}
+
+                                    </span>
+
+                                </div>
+
+
+                                {% if task.description %}
+
+                                    <p class="task-description">
+                                        {{ task.description }}
+                                    </p>
+
+                                {% endif %}
+
+
+                                {% if task.due_date %}
+
+                                    <p class="task-due-date">
+
+                                        <i class="fa-regular fa-calendar"></i>
+
+                                        Due
+                                        {{ task.due_date.strftime('%d %b %Y') }}
+
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="task-actions">
+
+                                <form
+                                    action="{{ url_for('delete_task_route', task_id=task.id) }}"
+                                    method="POST">
+
+                                    <button
+                                        type="submit"
+                                        class="delete-task-button"
+                                        aria-label="Delete task">
+
+                                        <i class="fa-regular fa-trash-can"></i>
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="tasks-empty-state">
+
+                    <img
+                        src="{{ url_for('static', filename='media/task-icon.png') }}"
+                        alt="Tasks">
+
+                    <h3>
+                        Your task list is empty
+                    </h3>
+
+                    <p>
+                        Add something above and start making progress.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</div>
+
+{% endblock %}

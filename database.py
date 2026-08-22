@@ -36,7 +36,30 @@ def initialize_database():
 
         )
     """)
+    
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS tasks (
 
+            id SERIAL PRIMARY KEY,
+
+            user_id INTEGER NOT NULL
+                REFERENCES users(id)
+                ON DELETE CASCADE,
+
+            title TEXT NOT NULL,
+
+            description TEXT,
+
+            due_date DATE,
+
+            priority TEXT DEFAULT 'medium',
+
+            completed BOOLEAN DEFAULT FALSE,
+
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+        )
+    """)
     connection.commit()
 
     cursor.close()
@@ -117,3 +140,157 @@ def get_user_by_email(email):
     connection.close()
 
     return user
+
+def create_task(user_id, title, description=None, due_date=None, priority="medium"):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO tasks
+        (user_id, title, description, due_date, priority)
+        VALUES (%s, %s, %s, %s, %s)
+        RETURNING *
+        """,
+        (
+            user_id,
+            title,
+            description,
+            due_date,
+            priority
+        )
+    )
+
+    task = cursor.fetchone()
+
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return task
+
+
+def get_tasks(user_id):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM tasks
+        WHERE user_id = %s
+        ORDER BY completed ASC, due_date ASC NULLS LAST, created_at DESC
+        """,
+        (user_id,)
+    )
+
+    tasks = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return tasks
+
+
+def get_today_tasks(user_id):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM tasks
+        WHERE user_id = %s
+        AND due_date = CURRENT_DATE
+        ORDER BY completed ASC, created_at DESC
+        """,
+        (user_id,)
+    )
+
+    tasks = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return tasks
+
+
+def toggle_task(task_id, user_id):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        UPDATE tasks
+        SET completed = NOT completed
+        WHERE id = %s
+        AND user_id = %s
+        RETURNING *
+        """,
+        (task_id, user_id)
+    )
+
+    task = cursor.fetchone()
+
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return task
+
+
+def delete_task(task_id, user_id):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM tasks
+        WHERE id = %s
+        AND user_id = %s
+        RETURNING id
+        """,
+        (task_id, user_id)
+    )
+
+    deleted = cursor.fetchone()
+
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return deleted
+
+
+def get_task_counts(user_id):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            COUNT(*) AS total_tasks,
+            COUNT(*) FILTER (
+                WHERE completed = TRUE
+            ) AS completed_tasks
+        FROM tasks
+        WHERE user_id = %s
+        """,
+        (user_id,)
+    )
+
+    counts = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return counts

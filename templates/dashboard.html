@@ -6,69 +6,143 @@
 
 <div class="dashboard-page">
 
+    <!-- SIDEBAR -->
+
     <aside class="dashboard-sidebar">
 
         <a href="{{ url_for('home') }}" class="dashboard-logo">
             <span>MindDesk</span>
         </a>
 
-        <div class="sidebar-section-label">
-            WORKSPACE
+
+        <div class="dashboard-sidebar-section">
+
+            <p class="sidebar-section-title">
+                WORKSPACE
+            </p>
+
+            <nav class="dashboard-nav">
+
+                <a
+                    href="{{ url_for('dashboard') }}"
+                    class="dashboard-nav-link active">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+
+                <a
+                    href="{{ url_for('tasks') }}"
+                    class="dashboard-nav-link">
+
+                    <i class="fa-solid fa-list-check"></i>
+
+                    <span>Tasks</span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="dashboard-nav-link">
+
+                    <i class="fa-regular fa-note-sticky"></i>
+
+                    <span>Notes</span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="dashboard-nav-link">
+
+                    <i class="fa-solid fa-bullseye"></i>
+
+                    <span>Goals</span>
+
+                </a>
+
+            </nav>
+
         </div>
 
-        <nav class="dashboard-nav">
 
-            <a href="{{ url_for('dashboard') }}"
-               class="dashboard-nav-link active">
-                <i class="fa-solid fa-house"></i>
-                <span>Dashboard</span>
-            </a>
+        <div class="dashboard-sidebar-section personal-section">
 
-            <a href="#" class="dashboard-nav-link">
-                <i class="fa-solid fa-list-check"></i>
-                <span>Tasks</span>
-            </a>
+            <p class="sidebar-section-title">
+                PERSONAL
+            </p>
 
-            <a href="#" class="dashboard-nav-link">
-                <i class="fa-regular fa-note-sticky"></i>
-                <span>Notes</span>
-            </a>
+            <nav class="dashboard-nav">
 
-            <a href="#" class="dashboard-nav-link">
-                <i class="fa-solid fa-bullseye"></i>
-                <span>Goals</span>
-            </a>
+                <a
+                    href="#"
+                    class="dashboard-nav-link">
 
-        </nav>
+                    <i class="fa-regular fa-user"></i>
 
-        <div class="sidebar-section-label sidebar-tools-label">
-            PERSONAL
+                    <span>Profile</span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="dashboard-nav-link">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    <span>Settings</span>
+
+                </a>
+
+            </nav>
+
         </div>
 
-        <nav class="dashboard-nav">
-
-            <a href="#" class="dashboard-nav-link">
-                <i class="fa-regular fa-user"></i>
-                <span>Profile</span>
-            </a>
-
-            <a href="#" class="dashboard-nav-link">
-                <i class="fa-solid fa-gear"></i>
-                <span>Settings</span>
-            </a>
-
-        </nav>
 
         <div class="dashboard-sidebar-bottom">
 
-            <a href="{{ url_for('logout') }}"
-               class="dashboard-nav-link logout-link">
+            {% if logged_in %}
 
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <a
+                    href="{{ url_for('logout') }}"
+                    class="dashboard-nav-link logout-link">
 
-                <span>Log Out</span>
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
 
-            </a>
+                    <span>Log Out</span>
+
+                </a>
+
+            {% else %}
+
+                <a
+                    href="{{ url_for('login') }}"
+                    class="dashboard-nav-link">
+
+                    <i class="fa-solid fa-right-to-bracket"></i>
+
+                    <span>Sign In</span>
+
+                </a>
+
+
+                <a
+                    href="{{ url_for('signup') }}"
+                    class="dashboard-nav-link">
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+                    <span>Sign Up</span>
+
+                </a>
+
+            {% endif %}
 
         </div>
 
@@ -85,7 +159,7 @@
                 </p>
 
                 <h1>
-                    {{ greeting }}, {{ user_name }}! 
+                    {{ greeting }}, {{ user_name }}!
                 </h1>
 
                 <p class="dashboard-subtitle">
@@ -94,49 +168,45 @@
 
             </div>
 
+
             <div class="dashboard-date">
 
                 <i class="fa-regular fa-calendar"></i>
 
-                <span id="current-date"></span>
+                <span id="dashboardDate"></span>
 
             </div>
 
         </header>
 
-        <div class="dashboard-lamp">
-
-            <div class="dashboard-lamp-swing">
-
-                <img
-                    src="{{ url_for('static', filename='media/lamp/lamp.png') }}"
-                    alt="MindDesk lamp">
-
-            </div>
-
-            <div class="dashboard-lamp-glow"></div>
-
-        </div>
-
-        <section class="dashboard-stats">
+        <section class="stats-grid">
 
             <div class="stat-card">
 
-                <div class="stat-icon pink">
-                    <i class="fa-solid fa-list-check"></i>
+                <div class="stat-icon stat-icon-pink">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='media/task-icon.png'
+                        ) }}"
+                        alt="Tasks">
+
                 </div>
 
-                <div>
+                <div class="stat-info">
 
                     <p class="stat-label">
                         TOTAL TASKS
                     </p>
 
-                    <h3>0</h3>
+                    <p class="stat-number">
+                        {{ total_tasks }}
+                    </p>
 
-                    <span class="stat-description">
+                    <p class="stat-description">
                         Tasks for today
-                    </span>
+                    </p>
 
                 </div>
 
@@ -145,21 +215,30 @@
 
             <div class="stat-card">
 
-                <div class="stat-icon green">
-                    <i class="fa-solid fa-check"></i>
+                <div class="stat-icon stat-icon-green">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='media/completed-icon.png'
+                        ) }}"
+                        alt="Completed">
+
                 </div>
 
-                <div>
+                <div class="stat-info">
 
                     <p class="stat-label">
                         COMPLETED
                     </p>
 
-                    <h3>0</h3>
+                    <p class="stat-number">
+                        {{ completed_tasks }}
+                    </p>
 
-                    <span class="stat-description">
+                    <p class="stat-description">
                         Tasks completed
-                    </span>
+                    </p>
 
                 </div>
 
@@ -168,21 +247,30 @@
 
             <div class="stat-card">
 
-                <div class="stat-icon purple">
-                    <i class="fa-solid fa-bullseye"></i>
+                <div class="stat-icon stat-icon-purple">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='media/goals-icon.png'
+                        ) }}"
+                        alt="Goals">
+
                 </div>
 
-                <div>
+                <div class="stat-info">
 
                     <p class="stat-label">
                         ACTIVE GOALS
                     </p>
 
-                    <h3>0</h3>
+                    <p class="stat-number">
+                        0
+                    </p>
 
-                    <span class="stat-description">
+                    <p class="stat-description">
                         Goals in progress
-                    </span>
+                    </p>
 
                 </div>
 
@@ -191,21 +279,30 @@
 
             <div class="stat-card">
 
-                <div class="stat-icon blue">
-                    <i class="fa-regular fa-clock"></i>
+                <div class="stat-icon stat-icon-blue">
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='media/focus-icon.png'
+                        ) }}"
+                        alt="Focus">
+
                 </div>
 
-                <div>
+                <div class="stat-info">
 
                     <p class="stat-label">
                         FOCUS TIME
                     </p>
 
-                    <h3>0h</h3>
+                    <p class="stat-number">
+                        0h
+                    </p>
 
-                    <span class="stat-description">
+                    <p class="stat-description">
                         Study time today
-                    </span>
+                    </p>
 
                 </div>
 
@@ -213,15 +310,15 @@
 
         </section>
 
-        <section class="dashboard-grid">
+        <section class="dashboard-panels">
 
-            <div class="dashboard-card tasks-card">
+            <section class="dashboard-panel">
 
-                <div class="card-header">
+                <div class="panel-header">
 
                     <div>
 
-                        <p class="card-label">
+                        <p class="panel-eyebrow">
                             TODAY
                         </p>
 
@@ -231,43 +328,116 @@
 
                     </div>
 
-                    <a href="#" class="card-action">
+                    <a
+                        href="{{ url_for('tasks') }}"
+                        class="panel-link">
+
                         View all
+
                     </a>
 
                 </div>
 
 
-                <div class="empty-state">
+                {% if today_tasks %}
 
-                    <div class="empty-icon">
-                        <i class="fa-regular fa-circle-check"></i>
+                    <div class="dashboard-existing-tasks">
+
+                        {% for task in today_tasks %}
+
+                            <div
+                                class="dashboard-existing-task
+                                {% if task.completed %}
+                                dashboard-existing-task-completed
+                                {% endif %}">
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'toggle_task_route',
+                                        task_id=task.id
+                                    ) }}">
+
+                                    <button
+                                        type="submit"
+                                        class="dashboard-task-circle">
+
+                                        {% if task.completed %}
+                                            <i class="fa-solid fa-check"></i>
+                                        {% endif %}
+
+                                    </button>
+
+                                </form>
+
+
+                                <button
+                                    type="button"
+                                    class="dashboard-existing-task-title"
+                                    data-task-id="{{ task.id }}"
+                                    data-title="{{ task.title|e }}"
+                                    data-description="{{ (task.description or '')|e }}"
+                                    data-due-date="{{ task.due_date or '' }}"
+                                    data-priority="{{ task.priority }}">
+
+                                    {{ task.title }}
+
+                                </button>
+
+                            </div>
+
+                        {% endfor %}
+
                     </div>
 
-                    <h3>
-                        Nothing here yet
-                    </h3>
+                {% else %}
 
-                    <p>
-                        Add your first task and start getting things done.
-                    </p>
+                    <div class="empty-state">
 
-                    <button class="cute-button">
-                        <i class="fa-solid fa-plus"></i>
-                        Add Task
-                    </button>
+                        <div class="custom-empty-icon">
 
-                </div>
+                            <img
+                                src="{{ url_for(
+                                    'static',
+                                    filename='media/task-icon.png'
+                                ) }}"
+                                alt="Tasks">
 
-            </div>
+                        </div>
 
-            <div class="dashboard-card goals-card">
+                        <h3>
+                            Nothing here yet
+                        </h3>
 
-                <div class="card-header">
+                        <p>
+                            Add your first task and start getting things done.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+
+                <button
+                    type="button"
+                    class="panel-action"
+                    id="openTaskModal">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Task
+
+                </button>
+
+            </section>
+
+            <section class="dashboard-panel">
+
+                <div class="panel-header">
 
                     <div>
 
-                        <p class="card-label">
+                        <p class="panel-eyebrow">
                             PROGRESS
                         </p>
 
@@ -277,17 +447,28 @@
 
                     </div>
 
-                    <a href="#" class="card-action">
+                    <a
+                        href="#"
+                        class="panel-link">
+
                         View all
+
                     </a>
 
                 </div>
 
 
-                <div class="empty-state compact">
+                <div class="empty-state">
 
-                    <div class="empty-icon purple-icon">
-                        <i class="fa-solid fa-bullseye"></i>
+                    <div class="custom-empty-icon">
+
+                        <img
+                            src="{{ url_for(
+                                'static',
+                                filename='media/goals-icon.png'
+                            ) }}"
+                            alt="Goals">
+
                     </div>
 
                     <h3>
@@ -298,22 +479,28 @@
                         Turn your plans into something you can track.
                     </p>
 
-                    <button class="cute-button purple-button">
-                        <i class="fa-solid fa-plus"></i>
-                        Add Goal
-                    </button>
-
                 </div>
 
-            </div>
 
-            <div class="dashboard-card notes-card">
+                <button
+                    type="button"
+                    class="panel-action goal-action">
 
-                <div class="card-header">
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Goal
+
+                </button>
+
+            </section>
+
+            <section class="dashboard-panel">
+
+                <div class="panel-header">
 
                     <div>
 
-                        <p class="card-label">
+                        <p class="panel-eyebrow notes-eyebrow">
                             NOTES
                         </p>
 
@@ -323,17 +510,28 @@
 
                     </div>
 
-                    <a href="#" class="card-action">
+                    <a
+                        href="#"
+                        class="panel-link">
+
                         View all
+
                     </a>
 
                 </div>
 
 
-                <div class="empty-state compact">
+                <div class="empty-state">
 
-                    <div class="empty-icon yellow-icon">
-                        <i class="fa-regular fa-note-sticky"></i>
+                    <div class="custom-empty-icon notes-icon">
+
+                        <img
+                            src="{{ url_for(
+                                'static',
+                                filename='media/completed-icon.png'
+                            ) }}"
+                            alt="Notes">
+
                     </div>
 
                     <h3>
@@ -344,22 +542,28 @@
                         Keep your thoughts, study notes, and ideas organized.
                     </p>
 
-                    <button class="cute-button yellow-button">
-                        <i class="fa-solid fa-plus"></i>
-                        New Note
-                    </button>
-
                 </div>
 
-            </div>
 
-            <div class="dashboard-card focus-card">
+                <button
+                    type="button"
+                    class="panel-action note-action">
 
-                <div class="card-header">
+                    <i class="fa-solid fa-plus"></i>
+
+                    New Note
+
+                </button>
+
+            </section>
+
+            <section class="dashboard-panel focus-panel">
+
+                <div class="panel-header">
 
                     <div>
 
-                        <p class="card-label">
+                        <p class="panel-eyebrow">
                             FOCUS
                         </p>
 
@@ -369,8 +573,16 @@
 
                     </div>
 
-                    <div class="focus-small-icon">
-                        <i class="fa-solid fa-bolt"></i>
+
+                    <div class="focus-corner-icon">
+
+                        <img
+                            src="{{ url_for(
+                                'static',
+                                filename='media/focus-icon.png'
+                            ) }}"
+                            alt="Focus">
+
                     </div>
 
                 </div>
@@ -378,19 +590,15 @@
 
                 <div class="focus-content">
 
-                    <div class="focus-circle">
+                    <div class="focus-timer">
 
-                        <div>
+                        <span class="focus-minutes">
+                            25
+                        </span>
 
-                            <strong>
-                                25
-                            </strong>
-
-                            <span>
-                                min
-                            </span>
-
-                        </div>
+                        <span class="focus-unit">
+                            min
+                        </span>
 
                     </div>
 
@@ -398,32 +606,44 @@
                         Ready for a focused study session?
                     </p>
 
-                    <button class="focus-button">
+                    <button
+                        type="button"
+                        class="panel-action focus-action">
+
                         <i class="fa-solid fa-play"></i>
+
                         Start Focus
+
                     </button>
 
                 </div>
 
-            </div>
+            </section>
 
         </section>
 
-        <section class="motivation-card">
+        <section class="dashboard-reminder">
 
-            <div class="motivation-flower">
-                
+            <div class="reminder-image">
+
+                <img
+                    src="{{ url_for(
+                        'static',
+                        filename='media/hello-kitty-flower.png'
+                    ) }}"
+                    alt="MindDesk reminder">
+
             </div>
 
-            <div>
+            <div class="reminder-content">
 
-                <p class="card-label">
+                <p class="panel-eyebrow">
                     A LITTLE REMINDER
                 </p>
 
-                <h2>
+                <h3>
                     Small steps still move you forward.
-                </h2>
+                </h3>
 
                 <p>
                     You don't have to do everything today.
@@ -438,25 +658,453 @@
 
 </div>
 
+<div
+    class="dashboard-modal"
+    id="taskModal">
+
+    <div class="dashboard-modal-overlay"></div>
+
+    <div class="dashboard-modal-card">
+
+        <button
+            type="button"
+            class="dashboard-modal-close"
+            id="closeTaskModal">
+
+            &times;
+
+        </button>
+
+        <p class="panel-eyebrow">
+            NEW TASK
+        </p>
+
+        <h2>
+            Add a task
+        </h2>
+
+        <form
+            method="POST"
+            action="{{ url_for('create_task_route') }}"
+            class="dashboard-task-form">
+
+            <label>
+                Task title
+
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="What do you need to do?"
+                    required>
+
+            </label>
+
+
+            <label>
+                Description
+
+                <textarea
+                    name="description"
+                    placeholder="Add a little more detail..."></textarea>
+
+            </label>
+
+
+            <div class="task-form-row">
+
+                <label>
+                    Due date
+
+                    <input
+                        type="date"
+                        name="due_date">
+
+                </label>
+
+
+                <label>
+                    Priority
+
+                    <select name="priority">
+
+                        <option value="low">
+                            Low
+                        </option>
+
+                        <option
+                            value="medium"
+                            selected>
+
+                            Medium
+
+                        </option>
+
+                        <option value="high">
+                            High
+                        </option>
+
+                    </select>
+
+                </label>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="dashboard-modal-submit">
+
+                Add Task
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div
+    class="dashboard-modal"
+    id="taskDetailModal">
+
+    <div class="dashboard-modal-overlay"></div>
+
+    <div class="dashboard-modal-card">
+
+        <button
+            type="button"
+            class="dashboard-modal-close"
+            id="closeTaskDetailModal">
+
+            &times;
+
+        </button>
+
+        <p class="panel-eyebrow">
+            TASK DETAILS
+        </p>
+
+        <h2 id="detailTaskTitle">
+            Task
+        </h2>
+
+        <div class="task-detail-content">
+
+            <div>
+
+                <span class="task-detail-label">
+                    Description
+                </span>
+
+                <p id="detailTaskDescription">
+                    No description.
+                </p>
+
+            </div>
+
+
+            <div class="task-detail-grid">
+
+                <div>
+
+                    <span class="task-detail-label">
+                        Due date
+                    </span>
+
+                    <p id="detailTaskDate">
+                        No due date
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <span class="task-detail-label">
+                        Priority
+                    </span>
+
+                    <p id="detailTaskPriority">
+                        Medium
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="task-detail-actions">
+
+            <form
+                method="POST"
+                id="detailToggleForm">
+
+                <button
+                    type="submit"
+                    class="task-secondary-button">
+
+                    Mark Complete
+
+                </button>
+
+            </form>
+
+
+            <form
+                method="POST"
+                id="detailDeleteForm">
+
+                <button
+                    type="submit"
+                    class="task-delete-button">
+
+                    Delete Task
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <script>
 
-    const dateElement = document.getElementById("current-date");
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    const dateElement =
+        document.getElementById("dashboardDate");
 
     if (dateElement) {
 
-        const today = new Date();
+        const now = new Date();
 
-        dateElement.textContent = today.toLocaleDateString(
-            undefined,
-            {
-                weekday: "long",
-                month: "long",
-                day: "numeric"
+        dateElement.textContent =
+            now.toLocaleDateString(
+                "en-US",
+                {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long"
+                }
+            );
+
+    }
+
+    const taskModal =
+        document.getElementById("taskModal");
+
+    const openTask =
+        document.getElementById("openTaskModal");
+
+    const closeTask =
+        document.getElementById("closeTaskModal");
+
+
+    if (openTask) {
+
+        openTask.addEventListener(
+            "click",
+            function () {
+
+                taskModal.classList.add(
+                    "modal-visible"
+                );
+
             }
         );
 
     }
 
+
+    if (closeTask) {
+
+        closeTask.addEventListener(
+            "click",
+            function () {
+
+                taskModal.classList.remove(
+                    "modal-visible"
+                );
+
+            }
+        );
+
+    }
+
+    const detailModal =
+        document.getElementById(
+            "taskDetailModal"
+        );
+
+    const closeDetail =
+        document.getElementById(
+            "closeTaskDetailModal"
+        );
+
+    const titleElement =
+        document.getElementById(
+            "detailTaskTitle"
+        );
+
+    const descriptionElement =
+        document.getElementById(
+            "detailTaskDescription"
+        );
+
+    const dateElementDetail =
+        document.getElementById(
+            "detailTaskDate"
+        );
+
+    const priorityElement =
+        document.getElementById(
+            "detailTaskPriority"
+        );
+
+    const toggleForm =
+        document.getElementById(
+            "detailToggleForm"
+        );
+
+    const deleteForm =
+        document.getElementById(
+            "detailDeleteForm"
+        );
+
+
+    document
+        .querySelectorAll(
+            ".dashboard-existing-task-title"
+        )
+        .forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    const taskId =
+                        button.dataset.taskId;
+
+                    titleElement.textContent =
+                        button.dataset.title;
+
+                    descriptionElement.textContent =
+                        button.dataset.description ||
+                        "No description.";
+
+                    dateElementDetail.textContent =
+                        button.dataset.dueDate ||
+                        "No due date";
+
+                    priorityElement.textContent =
+                        button.dataset.priority
+                            ? button.dataset.priority
+                                .charAt(0)
+                                .toUpperCase()
+                              + button.dataset.priority.slice(1)
+                            : "Medium";
+
+
+                    toggleForm.action =
+                        "/tasks/" +
+                        taskId +
+                        "/toggle";
+
+                    deleteForm.action =
+                        "/tasks/" +
+                        taskId +
+                        "/delete";
+
+
+                    detailModal.classList.add(
+                        "modal-visible"
+                    );
+
+                }
+            );
+
+        });
+
+
+    if (closeDetail) {
+
+        closeDetail.addEventListener(
+            "click",
+            function () {
+
+                detailModal.classList.remove(
+                    "modal-visible"
+                );
+
+            }
+        );
+
+    }
+
+    document
+        .querySelectorAll(
+            ".dashboard-modal-overlay"
+        )
+        .forEach(function (overlay) {
+
+            overlay.addEventListener(
+                "click",
+                function () {
+
+                    taskModal.classList.remove(
+                        "modal-visible"
+                    );
+
+                    detailModal.classList.remove(
+                        "modal-visible"
+                    );
+
+                }
+            );
+
+        });
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Escape") {
+
+                taskModal.classList.remove(
+                    "modal-visible"
+                );
+
+                detailModal.classList.remove(
+                    "modal-visible"
+                );
+
+            }
+
+        }
+    );
+
+});
+
 </script>
+
+<button
+    type="button"
+    class="theme-toggle"
+    id="themeToggle"
+    aria-label="Toggle theme">
+
+    <i class="fa-solid fa-moon"></i>
+
+    <span>Dark</span>
+
+</button>
 
 {% endblock %}

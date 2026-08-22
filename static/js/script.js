@@ -98,8 +98,6 @@ if (input.type === "password") {
 
 });
 
-/* LAMP */
-
 const lamp = document.getElementById("themeToggle");
 
 if (lamp) {
@@ -174,3 +172,67 @@ if (lamp) {
     });
 
 }
+
+const themeToggle = document.getElementById("themeToggle");
+
+if (themeToggle) {
+
+    const savedTheme =
+        localStorage.getItem("minddesk-theme");
+
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+    }
+
+
+    themeToggle.addEventListener("click", function () {
+
+        document.body.classList.toggle("dark-mode");
+
+        const isDark =
+            document.body.classList.contains("dark-mode");
+
+        localStorage.setItem(
+            "minddesk-theme",
+            isDark ? "dark" : "light"
+        );
+
+    });
+
+}
+
+    updateThemeButton();
+
+    themeToggle.addEventListener("click", function () {
+
+        document.body.classList.toggle("dark-mode");
+
+        const isDark =
+            document.body.classList.contains("dark-mode");
+
+        localStorage.setItem(
+            "minddesk-theme",
+            isDark ? "dark" : "light"
+        );
+
+        updateThemeButton();
+
+    });
+         
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const flashMessages =
+        document.querySelectorAll(".flash-message");
+
+    flashMessages.forEach(function (message) {
+
+        setTimeout(function () {
+
+            message.remove();
+
+        }, 4000);
+
+    });
+
+});
