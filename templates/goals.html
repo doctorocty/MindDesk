@@ -1,0 +1,389 @@
+{% extends "layout.html" %}
+
+{% block title %}Goals{% endblock %}
+
+{% block content %}
+
+<div class="goals-page">
+
+    <div class="goals-header">
+
+        <div>
+            <p class="goals-eyebrow">
+                YOUR PROGRESS
+            </p>
+
+            <h1>
+                Goals
+            </h1>
+
+            <p class="goals-subtitle">
+                Set meaningful goals and keep moving forward.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="goals-back-button">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Dashboard
+
+        </a>
+
+    </div>
+
+
+    <!-- CREATE GOAL -->
+
+    <section class="goals-create-card">
+
+        <div class="goals-section-heading">
+
+            <div class="goals-section-icon">
+
+    <img
+        src="{{ url_for(
+            'static',
+            filename='media/goals-icon.png'
+        ) }}"
+        alt="Goals">
+
+</div>
+
+            <div>
+
+                <h2>
+                    Create a Goal
+                </h2>
+
+                <p>
+                    What would you like to accomplish?
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="{{ url_for('create_goal_route') }}"
+            class="goal-form">
+
+            <div class="goal-form-field">
+
+                <label for="goalTitle">
+                    Goal title
+                </label>
+
+                <input
+                    id="goalTitle"
+                    type="text"
+                    name="title"
+                    placeholder="e.g. Learn Python"
+                    required>
+
+            </div>
+
+
+            <div class="goal-form-field">
+
+                <label for="goalDescription">
+                    Description
+                </label>
+
+                <textarea
+                    id="goalDescription"
+                    name="description"
+                    placeholder="Add some details about this goal..."></textarea>
+
+            </div>
+
+
+            <div class="goal-form-row">
+
+                <div class="goal-form-field">
+
+                    <label for="goalDate">
+                        Target date
+                    </label>
+
+                    <input
+                        id="goalDate"
+                        type="date"
+                        name="target_date">
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="goal-submit-button">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Goal
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- GOALS -->
+
+    <section class="goals-list-section">
+
+        <div class="goals-list-header">
+
+            <div>
+
+                <p class="goals-eyebrow">
+                    YOUR GOALS
+                </p>
+
+                <h2>
+                    Goals
+                </h2>
+
+            </div>
+
+            <span class="goals-count">
+                {{ goals|length }}
+            </span>
+
+        </div>
+
+
+        {% if goals %}
+
+            <div class="goals-list">
+
+                {% for goal in goals %}
+
+                    <article class="goal-card">
+
+                        <div class="goal-card-top">
+
+                            <div class="goal-card-title-area">
+
+                                <div class="goal-card-icon">
+
+
+                                <div>
+
+                                    <h3>
+                                        {{ goal.title }}
+                                    </h3>
+
+                                    {% if goal.description %}
+
+                                        <p>
+                                            {{ goal.description }}
+                                        </p>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            {% if goal.completed %}
+
+                                <span class="goal-status goal-status-completed">
+                                    Completed
+                                </span>
+
+                            {% else %}
+
+                                <span class="goal-status goal-status-active">
+                                    Active
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="goal-card-details">
+
+                            <div class="goal-progress-area">
+
+                                <div class="goal-progress-header">
+
+                                    <span>
+                                        Progress
+                                    </span>
+
+                                    <strong>
+                                        {{ goal.progress }}%
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="goal-progress-track">
+
+                                    <div
+                                      class="goal-progress-fill"
+                                      data-progress="{{ goal.progress }}">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="goal-card-bottom">
+
+                                {% if goal.target_date %}
+
+                                    <span class="goal-target-date">
+
+                                        <i class="fa-regular fa-calendar"></i>
+
+                                        {{ goal.target_date }}
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="goal-target-date">
+                                        No target date
+                                    </span>
+
+                                {% endif %}
+
+
+                                <div class="goal-card-actions">
+
+                                    {% if not goal.completed %}
+
+                                        <form
+                                            method="POST"
+                                            action="{{ url_for(
+                                                'update_goal_progress_route',
+                                                goal_id=goal.id
+                                            ) }}"
+                                            class="goal-progress-form">
+
+                                            <input
+                                                type="number"
+                                                name="progress"
+                                                min="0"
+                                                max="100"
+                                                value="{{ goal.progress }}"
+                                                aria-label="Goal progress">
+
+                                            <button
+                                                type="submit">
+
+                                                Update
+
+                                            </button>
+
+                                        </form>
+
+                                    {% endif %}
+
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'delete_goal_route',
+                                            goal_id=goal.id
+                                        ) }}">
+
+                                        <button
+                                            type="submit"
+                                            class="goal-delete-button"
+                                            aria-label="Delete goal">
+
+                                            <i class="fa-solid fa-trash"></i>
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="goals-empty-state">
+
+                <div class="goals-empty-icon">
+
+    <img
+        src="{{ url_for(
+            'static',
+            filename='media/goals-icon.png'
+        ) }}"
+        alt="Goals">
+
+</div>
+
+                <h3>
+                    No goals yet
+                </h3>
+
+                <p>
+                    Create your first goal above and start tracking your progress.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const progressBars =
+            document.querySelectorAll(
+                ".goal-progress-fill"
+            );
+
+        progressBars.forEach(
+            function (bar) {
+
+                const progress =
+                    Number(
+                        bar.dataset.progress
+                    ) || 0;
+
+                bar.style.width =
+                    progress + "%";
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
+
+{% endblock %}

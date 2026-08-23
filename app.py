@@ -5,7 +5,8 @@ from flask import (
     redirect,
     url_for,
     session,
-    flash
+    flash,
+    jsonify
 )
 
 from werkzeug.security import (
@@ -20,12 +21,20 @@ from database import (
     email_exists,
     create_user,
     get_user_by_email,
+
     create_task,
     get_tasks,
     get_today_tasks,
     toggle_task,
     delete_task,
-    get_task_counts
+    get_task_counts,
+
+    create_goal,
+    get_goals,
+    get_active_goals,
+    update_goal_progress,
+    delete_goal,
+    get_goal_counts
 )
 
 from datetime import datetime
@@ -173,7 +182,6 @@ def login():
                 url_for("login")
             )
 
-        # Store login information
         session["user_id"] = user["id"]
 
         session["user_name"] = user["full_name"]
@@ -264,36 +272,14 @@ def dashboard():
         )
 
 
-        today = datetime.now().date()
-
         today_tasks = []
 
-
         for task in all_tasks:
-            if task["completed"]:
 
+            if task["completed"]:
                 continue
 
-
-            due_date = task.get(
-                "due_date"
-            )
-
-            if due_date is None:
-
-                today_tasks.append(
-                    task
-                )
-
-            else:
-
-                task_date = due_date
-
-                if str(task_date) == str(today):
-
-                    today_tasks.append(
-                        task
-                    )
+            today_tasks.append(task)
 
 
     return render_template(
@@ -346,6 +332,164 @@ def tasks():
 
         tasks=user_tasks
 
+    )
+
+@app.route("/goals")
+def goals():
+
+    if "user_id" not in session:
+
+        return redirect(
+            url_for("login")
+        )
+
+    user_id = session[
+        "user_id"
+    ]
+
+    user_goals = get_goals(
+        user_id
+    )
+
+    return render_template(
+
+        "goals.html",
+
+        goals=user_goals
+
+    )
+
+@app.route(
+    "/goals/create",
+    methods=["POST"]
+)
+def create_goal_route():
+
+    if "user_id" not in session:
+
+        return redirect(
+            url_for("login")
+        )
+
+    title = request.form.get(
+        "title",
+        ""
+    ).strip()
+
+    description = request.form.get(
+        "description",
+        ""
+    ).strip()
+
+    target_date = request.form.get(
+        "target_date"
+    ) or None
+
+    if not title:
+
+        flash(
+            "Please enter a goal title.",
+            "error"
+        )
+
+        return redirect(
+            url_for("goals")
+        )
+
+    create_goal(
+
+        session["user_id"],
+
+        title,
+
+        description,
+
+        target_date
+
+    )
+
+    flash(
+        "Goal added successfully.",
+        "success"
+    )
+
+    return redirect(
+        url_for("goals")
+    )
+
+@app.route(
+    "/goals/<int:goal_id>/delete",
+    methods=["POST"]
+)
+def delete_goal_route(goal_id):
+
+    if "user_id" not in session:
+
+        return redirect(
+            url_for("login")
+        )
+
+    delete_goal(
+
+        goal_id,
+
+        session["user_id"]
+
+    )
+
+    flash(
+        "Goal deleted.",
+        "success"
+    )
+
+    return redirect(
+        url_for("goals")
+    )
+
+@app.route(
+    "/goals/<int:goal_id>/progress",
+    methods=["POST"]
+)
+def update_goal_progress_route(goal_id):
+
+    if "user_id" not in session:
+
+        return redirect(
+            url_for("login")
+        )
+
+    progress = request.form.get(
+        "progress",
+        0
+    )
+
+    try:
+
+        progress = int(progress)
+
+    except (ValueError, TypeError):
+
+        flash(
+            "Invalid progress value.",
+            "error"
+        )
+
+        return redirect(
+            url_for("goals")
+        )
+
+    update_goal_progress(
+
+        goal_id,
+
+        session["user_id"],
+
+        progress
+
+    )
+
+    return redirect(
+        url_for("goals")
     )
 
 @app.route(

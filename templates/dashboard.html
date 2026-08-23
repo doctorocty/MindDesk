@@ -1,12 +1,10 @@
 {% extends "layout.html" %}
 
-{% block title %}Dashboard — MindDesk{% endblock %}
+{% block title %}Dashboard MindDesk{% endblock %}
 
 {% block content %}
 
 <div class="dashboard-page">
-
-    <!-- SIDEBAR -->
 
     <aside class="dashboard-sidebar">
 
@@ -57,14 +55,14 @@
 
 
                 <a
-                    href="#"
-                    class="dashboard-nav-link">
+    href="{{ url_for('goals') }}"
+    class="dashboard-nav-link">
 
-                    <i class="fa-solid fa-bullseye"></i>
+    <i class="fa-solid fa-bullseye"></i>
 
-                    <span>Goals</span>
+    <span>Goals</span>
 
-                </a>
+</a>
 
             </nav>
 
@@ -341,7 +339,7 @@
 
                 {% if today_tasks %}
 
-                    <div class="dashboard-existing-tasks">
+                    <div class="dashboard-existing-tasks dashboard-task-strip">
 
                         {% for task in today_tasks %}
 
@@ -383,6 +381,24 @@
                                     {{ task.title }}
 
                                 </button>
+
+                                <div class="dashboard-task-meta">
+
+    <span class="dashboard-task-priority priority-{{ task.priority }}">
+        {{ task.priority|capitalize }}
+    </span>
+
+    <span class="dashboard-task-date">
+
+        {% if task.due_date %}
+            {{ task.due_date }}
+        {% else %}
+            No due date
+        {% endif %}
+
+    </span>
+
+</div>
 
                             </div>
 
