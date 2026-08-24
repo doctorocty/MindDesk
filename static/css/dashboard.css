@@ -1806,11 +1806,13 @@ body.dark-mode .goal-action {
 }
 
 .dashboard-notes-list {
+    flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 18px;
-    max-height: 230px;
+    margin: 12px 0 18px;
+    max-height: 205px;
     overflow-y: auto;
     padding-right: 4px;
 }
@@ -1903,4 +1905,43 @@ body.dark-mode .goal-action {
     font-size: 13px;
     font-weight: 600;
     text-decoration: none;
+}
+
+.dashboard-notes-list {
+    flex: 1;
+    min-height: 0;
+    max-height: 205px;
+    overflow-y: auto;
+    margin: 12px 0 18px;
+}
+
+.dashboard-notes-empty {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.dashboard-add-note-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex-shrink: 0;
+    margin-top: 0;
+    padding: 10px 18px;
+    border-radius: 12px;
+    background: #ff5fa2;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.dashboard-add-note-button:hover {
+    background: #f45197;
+    transform: translateY(-1px);
 }
