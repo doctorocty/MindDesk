@@ -84,6 +84,27 @@ def initialize_database():
 
         )
     """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS notes (
+
+            id SERIAL PRIMARY KEY,
+
+            user_id INTEGER NOT NULL
+                REFERENCES users(id)
+                ON DELETE CASCADE,
+
+            title TEXT NOT NULL,
+
+            content TEXT,
+
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+        )
+    """)
+
     connection.commit()
 
     cursor.close()

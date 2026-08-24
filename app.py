@@ -247,10 +247,12 @@ def dashboard():
         "user_id"
     )
 
+
     user_name = session.get(
         "user_name",
         "there"
     )
+
 
     if not user_id:
 
@@ -260,6 +262,13 @@ def dashboard():
         }
 
         today_tasks = []
+
+        goal_counts = {
+            "active_goals": 0
+        }
+
+        active_goals = []
+
 
     else:
 
@@ -271,15 +280,26 @@ def dashboard():
             user_id
         )
 
+        goal_counts = get_goal_counts(
+            user_id
+        )
+
+        active_goals = get_active_goals(
+            user_id
+        )
+
 
         today_tasks = []
 
         for task in all_tasks:
 
             if task["completed"]:
+
                 continue
 
-            today_tasks.append(task)
+            today_tasks.append(
+                task
+            )
 
 
     return render_template(
@@ -302,7 +322,13 @@ def dashboard():
             "completed_tasks"
         ],
 
-        today_tasks=today_tasks
+        today_tasks=today_tasks,
+
+        active_goals=active_goals,
+
+        active_goals_count=goal_counts[
+            "active_goals"
+        ]
 
     )
 

@@ -236,3 +236,19 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const goalProgressBars = document.querySelectorAll(
+        ".dashboard-goal-progress-fill"
+    );
+
+    goalProgressBars.forEach(function (bar) {
+
+        const progress = bar.dataset.progress || 0;
+
+        bar.style.width = progress + "%";
+
+    });
+
+});

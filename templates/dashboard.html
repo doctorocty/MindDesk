@@ -263,7 +263,7 @@
                     </p>
 
                     <p class="stat-number">
-                        0
+                        {{ active_goals_count }}
                     </p>
 
                     <p class="stat-description">
@@ -474,28 +474,79 @@
                 </div>
 
 
-                <div class="empty-state">
+                {% if active_goals %}
 
-                    <div class="custom-empty-icon">
+    <div class="dashboard-existing-goals">
 
-                        <img
-                            src="{{ url_for(
-                                'static',
-                                filename='media/goals-icon.png'
-                            ) }}"
-                            alt="Goals">
+        {% for goal in active_goals %}
+
+            <div class="dashboard-existing-goal">
+
+                <div class="dashboard-goal-info">
+
+                    <h3>
+                        {{ goal["title"] }}
+                    </h3>
+
+                    <div class="dashboard-goal-progress">
+
+                        <div class="dashboard-goal-progress-bar">
+
+                            <div
+    class="dashboard-goal-progress-fill"
+    data-progress="{{ goal.progress|default(0) }}">
+</div>
+
+                        </div>
+
+                        <span>
+                            {{ goal["progress"] }}%
+                        </span>
 
                     </div>
 
-                    <h3>
-                        Set your first goal
-                    </h3>
-
-                    <p>
-                        Turn your plans into something you can track.
-                    </p>
-
                 </div>
+
+                {% if goal["target_date"] %}
+
+                    <span class="dashboard-goal-date">
+                        {{ goal["target_date"] }}
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+{% else %}
+
+    <div class="empty-state">
+
+        <div class="custom-empty-icon">
+
+            <img
+                src="{{ url_for(
+                    'static',
+                    filename='media/goals-icon.png'
+                ) }}"
+                alt="Goals">
+
+        </div>
+
+        <h3>
+            Set your first goal
+        </h3>
+
+        <p>
+            Turn your plans into something you can track.
+        </p>
+
+    </div>
+
+{% endif %}
 
 
                 <button
@@ -1088,7 +1139,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         });
 
-    document.addEventListener(
+        document.addEventListener(
         "keydown",
         function (event) {
 
@@ -1106,6 +1157,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
     );
+
+    document
+        .querySelectorAll(".dashboard-goal-progress-fill")
+        .forEach(function (bar) {
+
+            const progress = Math.min(
+                100,
+                Math.max(
+                    0,
+                    Number(bar.dataset.progress) || 0
+                )
+            );
+
+            bar.style.width = progress + "%";
+
+        });
 
 });
 
