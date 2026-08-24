@@ -1,0 +1,560 @@
+{% extends "layout.html" %}
+
+{% block title %}Focus Hours{% endblock %}
+
+{% block content %}
+
+<div class="focus-page">
+
+    <div class="focus-page-header">
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="focus-back-button">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Dashboard
+
+        </a>
+
+    </div>
+
+
+    <main class="focus-main">
+
+        <div class="focus-label">
+            FOCUS HOURS
+        </div>
+
+        <h1>
+            Stay focused.
+        </h1>
+
+        <p class="focus-description">
+            Set your time, start your session, and focus until the timer ends.
+        </p>
+
+
+        <section class="focus-card">
+
+            <div class="focus-timer-ring">
+
+                <div class="focus-timer-inner">
+
+                    <span
+                        class="focus-time"
+                        id="focus-time">
+
+                        25:00
+
+                    </span>
+
+                    <span class="focus-status" id="focus-status">
+                        Ready to focus
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="focus-adjust-controls">
+
+                <button
+                    type="button"
+                    class="focus-adjust-button"
+                    id="decrease-time">
+
+                    <i class="fa-solid fa-minus"></i>
+
+                </button>
+
+
+                <div class="focus-duration">
+
+                    <span id="duration-value">
+                        25
+                    </span>
+
+                    <span>
+                        min
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="focus-adjust-button"
+                    id="increase-time">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="focus-controls">
+
+                <button
+                    type="button"
+                    class="focus-main-button"
+                    id="start-focus">
+
+                    <i class="fa-solid fa-play"></i>
+
+                    Start Focus
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="focus-reset-button"
+                    id="reset-focus">
+
+                    <i class="fa-solid fa-rotate-left"></i>
+
+                    Reset
+
+                </button>
+
+            </div>
+
+
+            <div class="focus-today">
+
+                <span>
+                    Today's focus
+                </span>
+
+                <strong id="today-focus">
+                    0 min
+                </strong>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const timeDisplay =
+        document.getElementById("focus-time");
+
+    const durationDisplay =
+        document.getElementById("duration-value");
+
+    const statusDisplay =
+        document.getElementById("focus-status");
+
+    const startButton =
+        document.getElementById("start-focus");
+
+    const resetButton =
+        document.getElementById("reset-focus");
+
+    const decreaseButton =
+        document.getElementById("decrease-time");
+
+    const increaseButton =
+        document.getElementById("increase-time");
+
+    const todayFocusDisplay =
+        document.getElementById("today-focus");
+
+
+    let durationMinutes = 25;
+
+    let remainingSeconds =
+        durationMinutes * 60;
+
+    let timerInterval = null;
+
+    let isRunning = false;
+
+    let wasRunningBeforeLeaving = false;
+
+
+    const todayKey =
+        "minddesk-focus-date";
+
+    const focusKey =
+        "minddesk-focus-seconds";
+
+
+    function getTodayString() {
+
+        const today = new Date();
+
+        return [
+            today.getFullYear(),
+            String(today.getMonth() + 1).padStart(2, "0"),
+            String(today.getDate()).padStart(2, "0")
+        ].join("-");
+
+    }
+
+
+    function checkNewDay() {
+
+        const savedDate =
+            localStorage.getItem(todayKey);
+
+        const today =
+            getTodayString();
+
+        if (savedDate !== today) {
+
+            localStorage.setItem(
+                todayKey,
+                today
+            );
+
+            localStorage.setItem(
+                focusKey,
+                "0"
+            );
+
+        }
+
+    }
+
+
+    function getTodayFocusSeconds() {
+
+        checkNewDay();
+
+        return parseInt(
+            localStorage.getItem(focusKey) || "0",
+            10
+        );
+
+    }
+
+
+    function saveTodayFocus(seconds) {
+
+        checkNewDay();
+
+        localStorage.setItem(
+            focusKey,
+            String(seconds)
+        );
+
+    }
+
+
+    function formatTime(seconds) {
+
+        const minutes =
+            Math.floor(seconds / 60);
+
+        const remaining =
+            seconds % 60;
+
+        return (
+            String(minutes).padStart(2, "0")
+            + ":"
+            + String(remaining).padStart(2, "0")
+        );
+
+    }
+
+
+    function updateDisplay() {
+
+        timeDisplay.textContent =
+            formatTime(remainingSeconds);
+
+        durationDisplay.textContent =
+            durationMinutes;
+
+        const todaySeconds =
+            getTodayFocusSeconds();
+
+        const todayMinutes =
+            Math.floor(todaySeconds / 60);
+
+        todayFocusDisplay.textContent =
+            todayMinutes + " min";
+
+    }
+
+
+    function startTimer() {
+
+        if (remainingSeconds <= 0) {
+            resetTimer();
+        }
+
+        if (isRunning) {
+            return;
+        }
+
+        isRunning = true;
+
+        statusDisplay.textContent =
+            "Stay focused...";
+
+        startButton.innerHTML =
+            '<i class="fa-solid fa-pause"></i> Pause';
+
+        timerInterval =
+            setInterval(function () {
+
+                if (!isRunning) {
+                    return;
+                }
+
+                remainingSeconds--;
+
+                const todaySeconds =
+                    getTodayFocusSeconds();
+
+                saveTodayFocus(
+                    todaySeconds + 1
+                );
+
+                updateDisplay();
+
+
+                if (remainingSeconds <= 0) {
+
+                    finishTimer();
+
+                }
+
+            }, 1000);
+
+    }
+
+
+    function pauseTimer() {
+
+        if (!isRunning) {
+            return;
+        }
+
+        isRunning = false;
+
+        clearInterval(
+            timerInterval
+        );
+
+        timerInterval = null;
+
+        statusDisplay.textContent =
+            "Focus paused";
+
+        startButton.innerHTML =
+            '<i class="fa-solid fa-play"></i> Resume';
+
+    }
+
+
+    function finishTimer() {
+
+        isRunning = false;
+
+        clearInterval(
+            timerInterval
+        );
+
+        timerInterval = null;
+
+        remainingSeconds = 0;
+
+        statusDisplay.textContent =
+            "Focus session complete!";
+
+        startButton.innerHTML =
+            '<i class="fa-solid fa-play"></i> Start Focus';
+
+        updateDisplay();
+
+    }
+
+
+    function resetTimer() {
+
+        isRunning = false;
+
+        clearInterval(
+            timerInterval
+        );
+
+        timerInterval = null;
+
+        remainingSeconds =
+            durationMinutes * 60;
+
+        statusDisplay.textContent =
+            "Ready to focus";
+
+        startButton.innerHTML =
+            '<i class="fa-solid fa-play"></i> Start Focus';
+
+        updateDisplay();
+
+    }
+
+
+    decreaseButton.addEventListener(
+        "click",
+        function () {
+
+            if (isRunning) {
+                return;
+            }
+
+            durationMinutes =
+                Math.max(
+                    5,
+                    durationMinutes - 5
+                );
+
+            resetTimer();
+
+        }
+    );
+
+
+    increaseButton.addEventListener(
+        "click",
+        function () {
+
+            if (isRunning) {
+                return;
+            }
+
+            durationMinutes =
+                Math.min(
+                    180,
+                    durationMinutes + 5
+                );
+
+            resetTimer();
+
+        }
+    );
+
+
+    startButton.addEventListener(
+        "click",
+        function () {
+
+            if (isRunning) {
+                pauseTimer();
+            } else {
+                startTimer();
+            }
+
+        }
+    );
+
+
+    resetButton.addEventListener(
+        "click",
+        function () {
+
+            resetTimer();
+
+        }
+    );
+
+
+    document.addEventListener(
+        "visibilitychange",
+        function () {
+
+            if (document.hidden) {
+
+                if (isRunning) {
+
+                    wasRunningBeforeLeaving =
+                        true;
+
+                    pauseTimer();
+
+                    statusDisplay.textContent =
+                        "Focus paused";
+
+                }
+
+            } else {
+
+                if (
+                    wasRunningBeforeLeaving
+                ) {
+
+                    wasRunningBeforeLeaving =
+                        false;
+
+                    startTimer();
+
+                }
+
+            }
+
+        }
+    );
+
+
+    window.addEventListener(
+        "blur",
+        function () {
+
+            if (isRunning) {
+
+                wasRunningBeforeLeaving =
+                    true;
+
+                pauseTimer();
+
+                statusDisplay.textContent =
+                    "Focus paused";
+
+            }
+
+        }
+    );
+
+
+    window.addEventListener(
+        "focus",
+        function () {
+
+            if (
+                wasRunningBeforeLeaving &&
+                !document.hidden
+            ) {
+
+                wasRunningBeforeLeaving =
+                    false;
+
+                startTimer();
+
+            }
+
+        }
+    );
+
+
+    checkNewDay();
+
+    updateDisplay();
+
+});
+
+</script>
+
+{% endblock %}

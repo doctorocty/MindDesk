@@ -21,20 +21,23 @@ from database import (
     email_exists,
     create_user,
     get_user_by_email,
-
     create_task,
     get_tasks,
     get_today_tasks,
     toggle_task,
     delete_task,
     get_task_counts,
-
     create_goal,
     get_goals,
     get_active_goals,
     update_goal_progress,
     delete_goal,
-    get_goal_counts
+    get_goal_counts,
+    create_note,
+    get_notes,
+    get_recent_notes,
+    update_note,
+    delete_note
 )
 
 from datetime import datetime
@@ -288,6 +291,11 @@ def dashboard():
             user_id
         )
 
+        recent_notes = get_recent_notes(
+            user_id,
+            5
+        )
+
 
         today_tasks = []
 
@@ -301,6 +309,7 @@ def dashboard():
                 task
             )
 
+            recent_notes = get_recent_notes(user_id, 3)
 
     return render_template(
 
@@ -324,12 +333,158 @@ def dashboard():
 
         today_tasks=today_tasks,
 
+        recent_notes=recent_notes,
+
         active_goals=active_goals,
+        
 
         active_goals_count=goal_counts[
             "active_goals"
         ]
 
+    )
+
+@app.route("/focus")
+def focus():
+
+    if "user_id" not in session:
+        return redirect(
+            url_for("login")
+        )
+
+    return render_template(
+        "focus.html"
+    )
+
+@app.route("/notes")
+def notes():
+
+    if "user_id" not in session:
+
+        return redirect(
+            url_for("login")
+        )
+
+    user_id = session["user_id"]
+
+    user_notes = get_notes(
+        user_id
+    )
+
+    return render_template(
+        "notes.html",
+        notes=user_notes
+    )
+
+@app.route("/notes/<int:note_id>/edit", methods=["POST"])
+def edit_note_route(note_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    title = request.form.get(
+        "title",
+        ""
+    ).strip()
+
+    content = request.form.get(
+        "content",
+        ""
+    ).strip()
+
+    if not title:
+
+        flash(
+            "Please enter a note title.",
+            "error"
+        )
+
+        return redirect(
+            url_for("notes")
+        )
+
+    update_note(
+        note_id,
+        session["user_id"],
+        title,
+        content
+    )
+
+    flash(
+        "Note updated successfully.",
+        "success"
+    )
+
+    return redirect(
+        url_for("notes")
+    )
+
+@app.route(
+    "/notes/create",
+    methods=["POST"]
+)
+def create_note_route():
+
+    if "user_id" not in session:
+
+        return redirect(
+            url_for("login")
+        )
+
+    title = request.form.get(
+        "title",
+        ""
+    ).strip()
+
+    content = request.form.get(
+        "content",
+        ""
+    ).strip()
+
+    if not title:
+
+        flash(
+            "Please enter a note title.",
+            "error"
+        )
+
+        return redirect(
+            url_for("notes")
+        )
+
+    create_note(
+        session["user_id"],
+        title,
+        content
+    )
+
+    flash(
+        "Note created successfully.",
+        "success"
+    )
+
+    return redirect(
+        url_for("notes")
+    )
+
+@app.route("/notes/<int:note_id>/delete", methods=["POST"])
+def delete_note_route(note_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    delete_note(
+        note_id,
+        session["user_id"]
+    )
+
+    flash(
+        "Note deleted.",
+        "success"
+    )
+
+    return redirect(
+        url_for("notes")
     )
 
 @app.route("/tasks")

@@ -21,9 +21,13 @@
 
 <div class="nav-links">
 
-    <a href="#about" class="nav-link">
-        About
-    </a>
+    <a
+    href="{{ url_for('signup') }}"
+    class="nav-link">
+
+    Sign Up
+
+</a>
 
     <a href="{{ url_for('login') }}" class="login-btn">
         Log In
@@ -81,18 +85,6 @@
             MindDesk brings your notes, tasks, goals, and study plans together
             in one beautiful workspace designed to help students stay organized.
         </p>
-
-        <div class="hero-buttons">
-
-            <a href="{{ url_for('dashboard') }}" class="hero-primary-btn">
-    Get Started
-</a>
-
-            <a href="#about" class="hero-secondary-btn">
-                Explore Features
-            </a>
-
-        </div>
 
     </div>
 

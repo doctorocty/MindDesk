@@ -44,7 +44,7 @@
 
 
                 <a
-                    href="#"
+                    href="{{ url_for('notes') }}"
                     class="dashboard-nav-link">
 
                     <i class="fa-regular fa-note-sticky"></i>
@@ -65,42 +65,6 @@
 </a>
 
             </nav>
-
-        </div>
-
-
-        <div class="dashboard-sidebar-section personal-section">
-
-            <p class="sidebar-section-title">
-                PERSONAL
-            </p>
-
-            <nav class="dashboard-nav">
-
-                <a
-                    href="#"
-                    class="dashboard-nav-link">
-
-                    <i class="fa-regular fa-user"></i>
-
-                    <span>Profile</span>
-
-                </a>
-
-
-                <a
-                    href="#"
-                    class="dashboard-nav-link">
-
-                    <i class="fa-solid fa-gear"></i>
-
-                    <span>Settings</span>
-
-                </a>
-
-            </nav>
-
-        </div>
 
 
         <div class="dashboard-sidebar-bottom">
@@ -563,66 +527,104 @@
 
             <section class="dashboard-panel">
 
-                <div class="panel-header">
+    <div class="panel-header">
 
-                    <div>
+        <div>
 
-                        <p class="panel-eyebrow notes-eyebrow">
-                            NOTES
+            <p class="panel-eyebrow notes-eyebrow">
+                NOTES
+            </p>
+
+            <h2>
+                Recent Notes
+            </h2>
+
+        </div>
+
+        <a
+            href="{{ url_for('notes') }}"
+            class="panel-link">
+
+            View all
+
+        </a>
+
+    </div>
+
+
+    {% if recent_notes %}
+
+        <div class="dashboard-notes-list">
+
+            {% for note in recent_notes %}
+
+                <div class="dashboard-note-card">
+
+                    <div class="dashboard-note-icon">
+    <img
+        src="{{ url_for(
+            'static',
+            filename='media/completed-icon.png'
+        ) }}"
+        alt="Notes">
+</div>
+
+                    <div class="dashboard-note-content">
+
+                        <h3>
+                            {{ note.title }}
+                        </h3>
+
+                        <p>
+                            {{ note.content or "No content yet." }}
                         </p>
 
-                        <h2>
-                            Recent Notes
-                        </h2>
-
                     </div>
 
-                    <a
-                        href="#"
-                        class="panel-link">
-
-                        View all
-
-                    </a>
+                    <span class="dashboard-note-date">
+                        {{ note.updated_at.strftime("%Y-%m-%d") }}
+                    </span>
 
                 </div>
 
+            {% endfor %}
 
-                <div class="empty-state">
+        </div>
 
-                    <div class="custom-empty-icon notes-icon">
+    {% else %}
 
-                        <img
-                            src="{{ url_for(
-                                'static',
-                                filename='media/completed-icon.png'
-                            ) }}"
-                            alt="Notes">
+        <div class="dashboard-empty-icon">
+    <img
+        src="{{ url_for(
+            'static',
+            filename='media/completed-icon.png'
+        ) }}"
+        alt="Notes">
+</div>
 
-                    </div>
+            <h3>
+                No notes yet
+            </h3>
 
-                    <h3>
-                        Your ideas live here
-                    </h3>
+            <p>
+                Create your first note to keep your ideas organized.
+            </p>
 
-                    <p>
-                        Keep your thoughts, study notes, and ideas organized.
-                    </p>
+            <a
+                href="{{ url_for('notes') }}"
+                class="dashboard-add-note-button">
 
-                </div>
+                <i class="fa-solid fa-plus"></i>
 
+                Add Note
 
-                <button
-                    type="button"
-                    class="panel-action note-action">
+            </a>
 
-                    <i class="fa-solid fa-plus"></i>
+        </div>
 
-                    New Note
+    {% endif %}
 
-                </button>
-
-            </section>
+</section>
 
             <section class="dashboard-panel focus-panel">
 
@@ -673,15 +675,15 @@
                         Ready for a focused study session?
                     </p>
 
-                    <button
-                        type="button"
-                        class="panel-action focus-action">
+                    <a
+    href="{{ url_for('focus') }}"
+    class="panel-action focus-action">
 
-                        <i class="fa-solid fa-play"></i>
+    <i class="fa-solid fa-play"></i>
 
-                        Start Focus
+    Start Focus
 
-                    </button>
+</a>
 
                 </div>
 

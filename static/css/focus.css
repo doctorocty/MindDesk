@@ -1,0 +1,213 @@
+.focus-page {
+    min-height: 100vh;
+    background: #fff8fb;
+    padding: 28px;
+    box-sizing: border-box;
+}
+
+.focus-page-header {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.focus-back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #ff5fa2;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.focus-main {
+    max-width: 760px;
+    margin: 45px auto 0;
+    text-align: center;
+}
+
+.focus-label {
+    color: #ff5fa2;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+}
+
+.focus-main h1 {
+    margin: 10px 0 8px;
+    color: #3f3440;
+    font-size: 42px;
+    font-weight: 700;
+}
+
+.focus-description {
+    margin: 0 auto 32px;
+    max-width: 500px;
+    color: #95858d;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.focus-card {
+    background: #ffffff;
+    border: 1px solid #f2dce7;
+    border-radius: 28px;
+    padding: 45px 30px 30px;
+    box-shadow: 0 12px 35px rgba(80, 45, 65, 0.07);
+}
+
+.focus-timer-ring {
+    width: 260px;
+    height: 260px;
+    margin: 0 auto 30px;
+    border: 13px solid #ffe5f0;
+    border-top-color: #ff69ac;
+    border-right-color: #ff69ac;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.focus-timer-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.focus-time {
+    color: #3f3440;
+    font-size: 52px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.focus-status {
+    margin-top: 12px;
+    color: #a28f98;
+    font-size: 13px;
+}
+
+.focus-adjust-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    margin-bottom: 28px;
+}
+
+.focus-adjust-button {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #f3cddd;
+    border-radius: 50%;
+    background: #fff5f9;
+    color: #ff5fa2;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.focus-adjust-button:hover {
+    background: #ffe5f0;
+    transform: translateY(-1px);
+}
+
+.focus-duration {
+    min-width: 90px;
+    color: #3f3440;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.focus-duration span:first-child {
+    font-size: 22px;
+}
+
+.focus-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.focus-main-button {
+    min-width: 170px;
+    padding: 13px 24px;
+    border: none;
+    border-radius: 13px;
+    background: #ff5fa2;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.focus-main-button:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.97);
+}
+
+.focus-reset-button {
+    border: none;
+    background: transparent;
+    color: #aa969f;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.focus-reset-button:hover {
+    color: #ff5fa2;
+}
+
+.focus-today {
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid #f3e4ea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #a28f98;
+    font-size: 12px;
+}
+
+.focus-today strong {
+    color: #ff5fa2;
+    font-weight: 700;
+}
+
+@media (max-width: 600px) {
+
+    .focus-page {
+        padding: 20px;
+    }
+
+    .focus-main {
+        margin-top: 35px;
+    }
+
+    .focus-main h1 {
+        font-size: 34px;
+    }
+
+    .focus-card {
+        padding: 35px 20px 25px;
+    }
+
+    .focus-timer-ring {
+        width: 220px;
+        height: 220px;
+    }
+
+    .focus-time {
+        font-size: 42px;
+    }
+
+}

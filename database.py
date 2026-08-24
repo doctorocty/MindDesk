@@ -119,11 +119,8 @@ def email_exists(email):
     cursor = connection.cursor()
 
     cursor.execute(
-
         "SELECT id FROM users WHERE email = %s",
-
         (email,)
-
     )
 
     user = cursor.fetchone()
@@ -142,15 +139,16 @@ def create_user(full_name, email, hashed_password):
     cursor = connection.cursor()
 
     cursor.execute(
-
         """
         INSERT INTO users
         (full_name, email, password)
         VALUES (%s, %s, %s)
         """,
-
-        (full_name, email, hashed_password)
-
+        (
+            full_name,
+            email,
+            hashed_password
+        )
     )
 
     connection.commit()
@@ -167,15 +165,12 @@ def get_user_by_email(email):
     cursor = connection.cursor()
 
     cursor.execute(
-
         """
         SELECT *
         FROM users
         WHERE email = %s
         """,
-
         (email,)
-
     )
 
     user = cursor.fetchone()
@@ -186,15 +181,29 @@ def get_user_by_email(email):
 
     return user
 
-def create_task(user_id, title, description=None, due_date=None, priority="medium"):
+
+def create_task(
+    user_id,
+    title,
+    description=None,
+    due_date=None,
+    priority="medium"
+):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
         """
         INSERT INTO tasks
-        (user_id, title, description, due_date, priority)
+        (
+            user_id,
+            title,
+            description,
+            due_date,
+            priority
+        )
         VALUES (%s, %s, %s, %s, %s)
         RETURNING *
         """,
@@ -212,6 +221,7 @@ def create_task(user_id, title, description=None, due_date=None, priority="mediu
     connection.commit()
 
     cursor.close()
+
     connection.close()
 
     return task
@@ -220,6 +230,7 @@ def create_task(user_id, title, description=None, due_date=None, priority="mediu
 def get_tasks(user_id):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -227,7 +238,10 @@ def get_tasks(user_id):
         SELECT *
         FROM tasks
         WHERE user_id = %s
-        ORDER BY completed ASC, due_date ASC NULLS LAST, created_at DESC
+        ORDER BY
+            completed ASC,
+            due_date ASC NULLS LAST,
+            created_at DESC
         """,
         (user_id,)
     )
@@ -235,6 +249,7 @@ def get_tasks(user_id):
     tasks = cursor.fetchall()
 
     cursor.close()
+
     connection.close()
 
     return tasks
@@ -243,6 +258,7 @@ def get_tasks(user_id):
 def get_today_tasks(user_id):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -251,7 +267,9 @@ def get_today_tasks(user_id):
         FROM tasks
         WHERE user_id = %s
         AND due_date = CURRENT_DATE
-        ORDER BY completed ASC, created_at DESC
+        ORDER BY
+            completed ASC,
+            created_at DESC
         """,
         (user_id,)
     )
@@ -259,6 +277,7 @@ def get_today_tasks(user_id):
     tasks = cursor.fetchall()
 
     cursor.close()
+
     connection.close()
 
     return tasks
@@ -267,6 +286,7 @@ def get_today_tasks(user_id):
 def toggle_task(task_id, user_id):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -277,7 +297,10 @@ def toggle_task(task_id, user_id):
         AND user_id = %s
         RETURNING *
         """,
-        (task_id, user_id)
+        (
+            task_id,
+            user_id
+        )
     )
 
     task = cursor.fetchone()
@@ -285,6 +308,7 @@ def toggle_task(task_id, user_id):
     connection.commit()
 
     cursor.close()
+
     connection.close()
 
     return task
@@ -293,6 +317,7 @@ def toggle_task(task_id, user_id):
 def delete_task(task_id, user_id):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -302,7 +327,10 @@ def delete_task(task_id, user_id):
         AND user_id = %s
         RETURNING id
         """,
-        (task_id, user_id)
+        (
+            task_id,
+            user_id
+        )
     )
 
     deleted = cursor.fetchone()
@@ -310,6 +338,7 @@ def delete_task(task_id, user_id):
     connection.commit()
 
     cursor.close()
+
     connection.close()
 
     return deleted
@@ -318,6 +347,7 @@ def delete_task(task_id, user_id):
 def get_task_counts(user_id):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -336,9 +366,11 @@ def get_task_counts(user_id):
     counts = cursor.fetchone()
 
     cursor.close()
+
     connection.close()
 
     return counts
+
 
 def create_goal(
     user_id,
@@ -348,6 +380,7 @@ def create_goal(
 ):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -375,6 +408,7 @@ def create_goal(
     connection.commit()
 
     cursor.close()
+
     connection.close()
 
     return goal
@@ -383,6 +417,7 @@ def create_goal(
 def get_goals(user_id):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -390,9 +425,10 @@ def get_goals(user_id):
         SELECT *
         FROM goals
         WHERE user_id = %s
-        ORDER BY completed ASC,
-                 target_date ASC NULLS LAST,
-                 created_at DESC
+        ORDER BY
+            completed ASC,
+            target_date ASC NULLS LAST,
+            created_at DESC
         """,
         (user_id,)
     )
@@ -400,6 +436,7 @@ def get_goals(user_id):
     goals = cursor.fetchall()
 
     cursor.close()
+
     connection.close()
 
     return goals
@@ -408,6 +445,7 @@ def get_goals(user_id):
 def get_active_goals(user_id):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -416,8 +454,9 @@ def get_active_goals(user_id):
         FROM goals
         WHERE user_id = %s
         AND completed = FALSE
-        ORDER BY target_date ASC NULLS LAST,
-                 created_at DESC
+        ORDER BY
+            target_date ASC NULLS LAST,
+            created_at DESC
         """,
         (user_id,)
     )
@@ -425,6 +464,7 @@ def get_active_goals(user_id):
     goals = cursor.fetchall()
 
     cursor.close()
+
     connection.close()
 
     return goals
@@ -444,6 +484,7 @@ def update_goal_progress(
     completed = progress >= 100
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -469,6 +510,7 @@ def update_goal_progress(
     connection.commit()
 
     cursor.close()
+
     connection.close()
 
     return goal
@@ -480,6 +522,7 @@ def delete_goal(
 ):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -500,6 +543,7 @@ def delete_goal(
     connection.commit()
 
     cursor.close()
+
     connection.close()
 
     return deleted
@@ -508,6 +552,7 @@ def delete_goal(
 def get_goal_counts(user_id):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -529,6 +574,181 @@ def get_goal_counts(user_id):
     counts = cursor.fetchone()
 
     cursor.close()
+
     connection.close()
 
     return counts
+
+
+def create_note(
+    user_id,
+    title,
+    content=None
+):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO notes
+        (
+            user_id,
+            title,
+            content
+        )
+        VALUES (%s, %s, %s)
+        RETURNING *
+        """,
+        (
+            user_id,
+            title,
+            content
+        )
+    )
+
+    note = cursor.fetchone()
+
+    connection.commit()
+
+    cursor.close()
+
+    connection.close()
+
+    return note
+
+
+def get_notes(user_id):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM notes
+        WHERE user_id = %s
+        ORDER BY
+            updated_at DESC,
+            created_at DESC
+        """,
+        (user_id,)
+    )
+
+    notes = cursor.fetchall()
+
+    cursor.close()
+
+    connection.close()
+
+    return notes
+
+
+def get_recent_notes(
+    user_id,
+    limit=5
+):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM notes
+        WHERE user_id = %s
+        ORDER BY
+            updated_at DESC,
+            created_at DESC
+        LIMIT %s
+        """,
+        (
+            user_id,
+            limit
+        )
+    )
+
+    notes = cursor.fetchall()
+
+    cursor.close()
+
+    connection.close()
+
+    return notes
+
+
+def update_note(
+    note_id,
+    user_id,
+    title,
+    content
+):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        UPDATE notes
+        SET
+            title = %s,
+            content = %s,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = %s
+        AND user_id = %s
+        RETURNING *
+        """,
+        (
+            title,
+            content,
+            note_id,
+            user_id
+        )
+    )
+
+    note = cursor.fetchone()
+
+    connection.commit()
+
+    cursor.close()
+
+    connection.close()
+
+    return note
+
+
+def delete_note(
+    note_id,
+    user_id
+):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM notes
+        WHERE id = %s
+        AND user_id = %s
+        RETURNING id
+        """,
+        (
+            note_id,
+            user_id
+        )
+    )
+
+    deleted = cursor.fetchone()
+
+    connection.commit()
+
+    cursor.close()
+
+    connection.close()
+
+    return deleted
