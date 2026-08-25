@@ -271,7 +271,7 @@ def dashboard():
         }
 
         active_goals = []
-
+        recent_notes = []
 
     else:
 
@@ -308,8 +308,6 @@ def dashboard():
             today_tasks.append(
                 task
             )
-
-            recent_notes = get_recent_notes(user_id, 3)
 
     return render_template(
 

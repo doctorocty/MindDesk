@@ -593,36 +593,40 @@
 
     {% else %}
 
-        <div class="dashboard-empty-icon">
-    <img
-        src="{{ url_for(
-            'static',
-            filename='media/completed-icon.png'
-        ) }}"
-        alt="Notes">
-</div>
+    <div class="empty-state">
 
-            <h3>
-                No notes yet
-            </h3>
+        <div class="custom-empty-icon">
 
-            <p>
-                Create your first note to keep your ideas organized.
-            </p>
-
-            <a
-                href="{{ url_for('notes') }}"
-                class="dashboard-add-note-button">
-
-                <i class="fa-solid fa-plus"></i>
-
-                Add Note
-
-            </a>
+            <img
+                src="{{ url_for(
+                    'static',
+                    filename='media/completed-icon.png'
+                ) }}"
+                alt="Notes">
 
         </div>
 
-    {% endif %}
+        <h3>
+            No notes yet
+        </h3>
+
+        <p>
+            Create your first note to keep your ideas organized.
+        </p>
+
+        <a
+            href="{{ url_for('notes') }}"
+            class="dashboard-add-note-button">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Add Note
+
+        </a>
+
+    </div>
+
+{% endif %}
 
 </section>
 
